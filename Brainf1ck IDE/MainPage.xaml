@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Brainf1ck_IDE.MainPage"
+             xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
+             xmlns:projectRelated="clr-namespace:Brainf1ck_IDE.Common.ProjectRelated"
+             x:DataType="viewmodel:MainPageModel">
+
+    <Grid ColumnDefinitions="4*,3*">
+        <VerticalStackLayout Grid.Column="0" Padding="30">
+            <Label Text="Open recent" Margin="0,10" Style="{StaticResource SubHeadline}" />
+            <ScrollView>
+                <CollectionView ItemsSource="{Binding Projects}"
+                                EmptyView="No projects opened yet. Create or open one">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type projectRelated:ProjectMetadata}">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Name}" />
+                                <Label Text="{Binding Path}" />
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+        </VerticalStackLayout>
+        <VerticalStackLayout Grid.Column="1" Padding="30" Spacing="6">
+            <Label Text="Get started" Margin="0,10" Style="{StaticResource SubHeadline}" />
+            <Button
+                x:Name="CreateProjectBtn"
+                Text="Create new project"
+                Clicked="CreateProjectBtn_Clicked"
+                HorizontalOptions="Fill" />
+            <Button
+                x:Name="OpenProjectBtn"
+                Text="Open existing project"
+                Clicked="OpenProjectBtn_Clicked"
+                HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+    </Grid>
+
+</ContentPage>

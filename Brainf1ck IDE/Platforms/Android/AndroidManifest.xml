@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.eugeniusdev.brainf1ck_IDE">
+	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:supportsRtl="true" android:label="Brainf1ck IDE"></application>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+</manifest>
