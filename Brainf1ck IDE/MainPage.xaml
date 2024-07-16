@@ -6,36 +6,100 @@
              xmlns:projectRelated="clr-namespace:Brainf1ck_IDE.Common.ProjectRelated"
              x:DataType="viewmodel:MainPageModel">
 
-    <Grid ColumnDefinitions="4*,3*">
-        <VerticalStackLayout Grid.Column="0" Padding="30">
-            <Label Text="Open recent" Margin="0,10" Style="{StaticResource SubHeadline}" />
-            <ScrollView>
-                <CollectionView ItemsSource="{Binding Projects}"
+    <VerticalStackLayout>
+        <!-- Grid that serves as main menu -->
+        <Grid x:Name="MainMenuGrid" ColumnDefinitions="4*,3*" Padding="10">
+            <!-- List of existing projects -->
+            <VerticalStackLayout Grid.Column="0" Padding="30">
+                <Label Text="Open linked project" Margin="0,10" Style="{StaticResource SubHeadline}" />
+                <ScrollView>
+                    <CollectionView ItemsSource="{Binding Projects}"
                                 EmptyView="No projects opened yet. Create or open one">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="{x:Type projectRelated:ProjectMetadata}">
-                            <VerticalStackLayout>
-                                <Label Text="{Binding Name}" />
-                                <Label Text="{Binding Path}" />
-                            </VerticalStackLayout>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </ScrollView>
-        </VerticalStackLayout>
-        <VerticalStackLayout Grid.Column="1" Padding="30" Spacing="6">
-            <Label Text="Get started" Margin="0,10" Style="{StaticResource SubHeadline}" />
-            <Button
-                x:Name="CreateProjectBtn"
-                Text="Create new project"
-                Clicked="CreateProjectBtn_Clicked"
-                HorizontalOptions="Fill" />
-            <Button
-                x:Name="OpenProjectBtn"
-                Text="Open existing project"
-                Clicked="OpenProjectBtn_Clicked"
-                HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </Grid>
-
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="{x:Type projectRelated:ProjectMetadata}">
+                                <VerticalStackLayout> <!--TODO implement opening these projects-->
+                                    <Label Text="{Binding Name}" />
+                                    <Label Text="{Binding Path}" />
+                                </VerticalStackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </VerticalStackLayout>
+            <!-- Buttons to create or open new project -->
+            <VerticalStackLayout Grid.Column="1" Padding="30" Spacing="6">
+                <Label Text="Get started" Margin="0,10" Style="{StaticResource SubHeadline}" />
+                <Button
+                    x:Name="CreateProjectBtn"
+                    Text="Create new project"
+                    Clicked="CreateProjectBtn_Clicked"
+                    HorizontalOptions="Fill"
+                    MinimumHeightRequest="100" FontSize="20" />
+                <Button
+                    x:Name="OpenProjectBtn"
+                    Text="Open existing project"
+                    Clicked="OpenProjectBtn_Clicked"
+                    HorizontalOptions="Fill"
+                    MinimumHeightRequest="100" FontSize="20" />
+            </VerticalStackLayout>
+        </Grid>
+        <!-- Grid that serves for new project creation -->
+        <Grid x:Name="NewProjectGrid" IsEnabled="False" IsVisible="Collapse" 
+              Padding="30" Scale=".6"
+              ColumnDefinitions="1*,3*,1*" RowDefinitions="4*,1*" HorizontalOptions="Fill" VerticalOptions='Fill'>
+            <VerticalStackLayout Grid.ColumnSpan="3" Spacing="40" Margin="0,0,0,50" HorizontalOptions="Center">
+                <!-- Project name prompt -->
+                <HorizontalStackLayout Spacing="30">
+                    <Label Text="Project name:" VerticalOptions="Center" />
+                    <Entry Text="{Binding ProjectToCreate.Name}"
+                           x:Name="ProjectNameEntry" MinimumWidthRequest="400"
+                           Placeholder="Enter project name here" PlaceholderColor="#444" />
+                </HorizontalStackLayout>
+                <!-- Specifying root folder prompt -->
+                <HorizontalStackLayout Spacing="30">
+                    <Label Text="Root folder:" VerticalOptions="Center" />
+                    <Frame MinimumWidthRequest="500" CornerRadius="5">
+                        <HorizontalStackLayout Spacing="300">
+                            <Label x:Name="RootFolderLabel" Text="Choose the folder"
+                                   LineBreakMode="NoWrap" VerticalOptions="Center" ZIndex="1"/>
+                            <ImageButton x:Name="RootFolderChoosingBtn" ZIndex="2"
+                                Source="Resources/Images/dotnet_bot.png"
+                                Clicked="RootFolderChoosingBtn_Clicked" />
+                        </HorizontalStackLayout>
+                    </Frame>
+                </HorizontalStackLayout>
+                <!-- Determine if default file should be created -->
+                <HorizontalStackLayout Spacing="50">
+                    <HorizontalStackLayout Spacing="10">
+                        <CheckBox IsChecked="True" x:Name="DefaultFileCheckbox"
+                              CheckedChanged="DefaultFileCheckbox_CheckedChanged" />
+                        <Label Text="Create sample main.bf script" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <!-- Determine memory length -->
+                    <HorizontalStackLayout Spacing="20">
+                        <Label Text="Memory length:" VerticalOptions="Center" />
+                        <Entry Text="{Binding MemoryLengthInput}"
+                           MaximumWidthRequest="100" Keyboard="Numeric"
+                           Placeholder="30000" PlaceholderColor="#444" />
+                        <!--Text="{Binding ProjectToCreate.MemoryLength}"-->
+                    </HorizontalStackLayout>
+                    <!-- Determine initial cell index -->
+                    <HorizontalStackLayout Spacing="20">                        
+                        <Label Text="Initial cell index:" VerticalOptions="Center" />
+                        <Entry Text="{Binding InitialIndexInput}"
+                           MaximumWidthRequest="100" Keyboard="Numeric"
+                           Placeholder="0" PlaceholderColor="#444" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+                <Label Text="{Binding ErrorMessage}" x:Name="ErrorLabel"
+                       TextColor="#aa2222" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+            <!-- Cancel or create new project -->
+            <Button Grid.Row="1" Text="Cancel"
+                x:Name="CancelNewProjectBtn" Clicked="CancelNewProjectBtn_Clicked" />
+            <Button Grid.Row="1" Grid.Column="2" Text="Create"
+                Command="{Binding TryOpenNewProjectCommand}"
+                x:Name="ConfirmNewProjectBtn" Clicked="ConfirmNewProjectBtn_Clicked" />
+        </Grid>
+    </VerticalStackLayout>
 </ContentPage>

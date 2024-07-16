@@ -1,6 +1,6 @@
 ﻿using Brainf1ck_IDE.ViewModels;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Platform;
 
 namespace Brainf1ck_IDE
 {
@@ -11,6 +11,7 @@ namespace Brainf1ck_IDE
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

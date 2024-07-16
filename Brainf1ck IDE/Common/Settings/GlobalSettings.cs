@@ -2,11 +2,6 @@
 {
     public class GlobalSettings
     {
-        public string? DefaultFolderForNewProjects { get; set; }
-
-        public GlobalSettings()
-        {
-            // TODO remove if not needed. It is useful when data cannot be read from settings file
-        }
+        public string? RootFolderForNewProjects { get; set; }
     }
 }

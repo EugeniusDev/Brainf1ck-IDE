@@ -18,5 +18,16 @@ namespace Brainf1ck_IDE.Common.FileProcessing
             string jsonString = JsonSerializer.Serialize(globalSettings);
             File.WriteAllText(FilePaths.globalSettingsPath, jsonString);
         }
+
+        public static void SaveProjectPropertiesToFile(string filePath, ProjectProperties props)
+        {
+            string jsonString = JsonSerializer.Serialize(props);
+            File.WriteAllText(filePath, jsonString);
+        }
+
+        public static void SaveFile(string filePath, string contents)
+        {
+            File.WriteAllText(filePath, contents);
+        }
     }
 }

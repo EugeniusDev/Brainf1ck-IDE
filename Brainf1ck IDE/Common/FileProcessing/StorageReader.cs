@@ -27,14 +27,14 @@ namespace Brainf1ck_IDE.Common.FileProcessing
             return [];
         }
 
-        public static Project? RetrieveProjectFrom(string filePath)
+        public static ProjectProperties? RetrieveProjectFrom(string filePath)
         {
             if (File.Exists(filePath))
             {
                 string jsonString = File.ReadAllText(filePath);
                 try
                 {
-                    return JsonSerializer.Deserialize<Project>(jsonString);
+                    return JsonSerializer.Deserialize<ProjectProperties>(jsonString);
                 }
                 catch
                 {
