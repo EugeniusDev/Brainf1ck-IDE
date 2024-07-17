@@ -8,42 +8,79 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
     {
         public static bool HasValidStructure(ProjectProperties project)
         {
-            // TODO implement
-            return false;
+            bool runnableFileIsFine = project.FileToRun is null
+                || File.Exists(project.FileToRun);
+            return Path.Exists(FormProjectFolderPath(project))
+                && Path.Exists(FormProjectSettingsPath(project))
+                && Path.Exists(FormProjectFilesFolderPath(project))
+                && runnableFileIsFine;
         }
 
-        public static void CreateNewProjectStructure(GlobalSettings settings, ProjectProperties project)
+        public static void CreateNewProjectStructure(ProjectProperties project)
         {
+            CreateFoldersAndMainFile(project);
+            project.SaveToFile(FormProjectSettingsPath(project));            
+        }
+
+        private static void CreateFoldersAndMainFile(ProjectProperties project)
+        {
+            GlobalSettings settings = StorageReader.RetrieveGlobalSettings();
             if (settings.RootFolderForNewProjects is null)
             {
                 return;
             }
-            string projectDirectoryPath = Path
-                .Combine(settings.RootFolderForNewProjects,
-                project.Name);
-            Directory.CreateDirectory(projectDirectoryPath);
 
-            string projectSettingsFilePath = Path
-                .Combine(projectDirectoryPath, 
-                $"{FilePaths.GetProjectSettingsFilename(project.Name)}");
-            project.SaveToFile(projectSettingsFilePath);
-
-            string projectFilesDirectoryPath = Path
-                .Combine(projectDirectoryPath, project.Name);
-            Directory.CreateDirectory(projectFilesDirectoryPath);
-
+            string projectFilesFolder = FormProjectFilesFolderPath(project);
+            Directory.CreateDirectory(FormProjectFolderPath(project));
+            Directory.CreateDirectory(projectFilesFolder);
             if (project.FileToRun is not null)
             {
-                string helloWorldCode = BrainfuckSnippets.helloWorldSnippet;
-                string mainFilePath = Path.Combine(projectFilesDirectoryPath,
+                string mainFilePath = Path.Combine(projectFilesFolder,
                     project.FileToRun);
-                StorageWriter.SaveFile(mainFilePath, helloWorldCode);
+                if (!File.Exists(mainFilePath))
+                {
+                    string helloWorldCode = BrainfuckSnippets.helloWorldSnippet;
+                    StorageWriter.SaveFile(mainFilePath, helloWorldCode);
+                }
             }
         }
 
-        public static void CreateValidStructure(ProjectMetadata project)
+        public static string FormProjectFolderPath(ProjectProperties project)
         {
-            // TODO implement
+            GlobalSettings settings = StorageReader.RetrieveGlobalSettings();
+            if (settings.RootFolderForNewProjects is null)
+            {
+                return string.Empty;
+            }
+
+            return Path.Combine(settings.RootFolderForNewProjects,
+                project.Name);
+        }
+        public static string FormProjectFilesFolderPath(ProjectProperties project)
+        {
+            string projectFolder = FormProjectFolderPath(project);
+            if (string.IsNullOrEmpty(projectFolder))
+            {
+                return string.Empty;
+            }
+
+            return Path.Combine(projectFolder, project.Name);
+        }
+        public static string FormProjectSettingsPath(ProjectProperties project)
+        {
+            GlobalSettings settings = StorageReader.RetrieveGlobalSettings();
+            if (settings.RootFolderForNewProjects is null)
+            {
+                return string.Empty;
+            }
+
+            return Path.Combine(FormProjectFolderPath(project),
+                FilePaths.GetProjectSettingsFilename(project.Name));
+        }
+
+        public static void RestoreValidStructure(ProjectProperties project)
+        {
+            CreateFoldersAndMainFile(project);
         }
     }
 }

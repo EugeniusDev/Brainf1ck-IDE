@@ -27,7 +27,7 @@ namespace Brainf1ck_IDE.Common.FileProcessing
             return [];
         }
 
-        public static ProjectProperties? RetrieveProjectFrom(string filePath)
+        public static ProjectProperties? RetrieveProjectPropertiesFrom(string filePath)
         {
             if (File.Exists(filePath))
             {

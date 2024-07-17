@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Brainf1ck_IDE.ProjectPage"
+             xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
+             x:DataType="viewmodel:ProjectPageViewModel">
+    <VerticalStackLayout>
+        <Label 
+            Text="{Binding ProjectProps.Name}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label 
+            Text="sdfdsfsdfsdf}"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>

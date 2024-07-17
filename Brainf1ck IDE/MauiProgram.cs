@@ -18,7 +18,10 @@ namespace Brainf1ck_IDE
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             builder.Services.AddSingleton<MainPage>();
-            builder.Services.AddSingleton<MainPageModel>();
+            builder.Services.AddSingleton<MainPageViewModel>();
+
+            builder.Services.AddTransient<ProjectPage>();
+            builder.Services.AddTransient<ProjectPageViewModel>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

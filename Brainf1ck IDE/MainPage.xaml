@@ -4,7 +4,7 @@
              x:Class="Brainf1ck_IDE.MainPage"
              xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
              xmlns:projectRelated="clr-namespace:Brainf1ck_IDE.Common.ProjectRelated"
-             x:DataType="viewmodel:MainPageModel">
+             x:DataType="viewmodel:MainPageViewModel">
 
     <VerticalStackLayout>
         <!-- Grid that serves as main menu -->
@@ -12,35 +12,75 @@
             <!-- List of existing projects -->
             <VerticalStackLayout Grid.Column="0" Padding="30">
                 <Label Text="Open linked project" Margin="0,10" Style="{StaticResource SubHeadline}" />
-                <ScrollView>
-                    <CollectionView ItemsSource="{Binding Projects}"
+                <ScrollView MaximumHeightRequest="360">
+                    <CollectionView ItemsSource="{Binding Projects}" 
                                 EmptyView="No projects opened yet. Create or open one">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
+                        </CollectionView.ItemsLayout>
                         <CollectionView.ItemTemplate>
                             <DataTemplate x:DataType="{x:Type projectRelated:ProjectMetadata}">
-                                <VerticalStackLayout> <!--TODO implement opening these projects-->
-                                    <Label Text="{Binding Name}" />
-                                    <Label Text="{Binding Path}" />
-                                </VerticalStackLayout>
+                                <Frame CornerRadius="8" Padding="0" MinimumHeightRequest="50">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource 
+                                           AncestorType={x:Type viewmodel:MainPageViewModel}},
+                                           Path=OpenExistingProjectCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Frame.GestureRecognizers>
+                                    <Grid 
+                                        HorizontalOptions="Fill" VerticalOptions="Fill" 
+                                        ColumnDefinitions="5*,1*">
+                                        <VerticalStackLayout Padding="20" Spacing="10">
+                                            <Label Text="{Binding Name}" FontSize="Micro" />
+                                            <Label Text="{Binding Path}" FontSize="Caption" />
+                                        </VerticalStackLayout>
+                                        <ImageButton Grid.Column="1" Margin="20"
+                                                     Command="{Binding Source={RelativeSource 
+                                                        AncestorType={x:Type viewmodel:MainPageViewModel}},
+                                                        Path=RemoveProjectCommand}"
+                                                     CommandParameter="{Binding .}"
+                                                     Source="Resources/Images/dotnet_bot.png" />
+                                    </Grid>
+                                </Frame>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                     </CollectionView>
                 </ScrollView>
             </VerticalStackLayout>
-            <!-- Buttons to create or open new project -->
-            <VerticalStackLayout Grid.Column="1" Padding="30" Spacing="6">
-                <Label Text="Get started" Margin="0,10" Style="{StaticResource SubHeadline}" />
-                <Button
-                    x:Name="CreateProjectBtn"
-                    Text="Create new project"
-                    Clicked="CreateProjectBtn_Clicked"
-                    HorizontalOptions="Fill"
-                    MinimumHeightRequest="100" FontSize="20" />
-                <Button
-                    x:Name="OpenProjectBtn"
-                    Text="Open existing project"
-                    Clicked="OpenProjectBtn_Clicked"
-                    HorizontalOptions="Fill"
-                    MinimumHeightRequest="100" FontSize="20" />
+            <!-- Buttons(formerly frames) to create or open new project -->
+            <VerticalStackLayout Grid.Column="1" Padding="30" Spacing="30">
+                <Label Text="Get started" Style="{StaticResource SubHeadline}" />
+                <!-- TODO make template for this frame
+                so it's required to specify only image, text and tapped event-->
+                <Frame CornerRadius="4" Padding="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CreateProjectBtn_Tapped" />
+                    </Frame.GestureRecognizers>
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Fill"
+                                          ColumnDefinitions="2*,5*">
+                        <Image Margin="20" Aspect="AspectFit"
+                               Source="Resources/Images/dotnet_bot.png"/>
+                        <VerticalStackLayout Grid.Column="1" Padding="20" Spacing="10">
+                            <Label Text="Create new project" FontSize="Small" />
+                            <Label Text="Change or leave default settings and get started" FontSize="Micro" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
+                <!-- TODO get rid of this duplicate frame, read solution above -->
+                <Frame CornerRadius="4" Padding="0">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OpenProjectBtn_Tapped" />
+                    </Frame.GestureRecognizers>
+                    <Grid HorizontalOptions="Fill" VerticalOptions="Fill"
+                                          ColumnDefinitions="2*,5*">
+                        <Image Margin="20" Aspect="AspectFit"
+                               Source="Resources/Images/dotnet_bot.png"/>
+                        <VerticalStackLayout Grid.Column="1" Padding="20" Spacing="10">
+                            <Label Text="Open existing project" FontSize="Small" />
+                            <Label Text="Locate a .bfide file to open existing Brainfuck IDE project" FontSize="Micro" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Frame>
             </VerticalStackLayout>
         </Grid>
         <!-- Grid that serves for new project creation -->
@@ -95,11 +135,10 @@
                        TextColor="#aa2222" HorizontalOptions="Center" />
             </VerticalStackLayout>
             <!-- Cancel or create new project -->
-            <Button Grid.Row="1" Text="Cancel"
-                x:Name="CancelNewProjectBtn" Clicked="CancelNewProjectBtn_Clicked" />
+            <Button Grid.Row="1" Text="Cancel" Clicked="CancelNewProjectBtn_Clicked" />
             <Button Grid.Row="1" Grid.Column="2" Text="Create"
                 Command="{Binding TryOpenNewProjectCommand}"
-                x:Name="ConfirmNewProjectBtn" Clicked="ConfirmNewProjectBtn_Clicked" />
+                Clicked="ConfirmNewProjectBtn_Clicked" />
         </Grid>
     </VerticalStackLayout>
 </ContentPage>

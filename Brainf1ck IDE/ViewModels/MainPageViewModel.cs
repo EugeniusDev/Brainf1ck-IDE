@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Brainf1ck_IDE.ViewModels
 {
-    public partial class MainPageModel : ObservableObject
+    public partial class MainPageViewModel : ObservableObject
     {
         [ObservableProperty]
         private ObservableCollection<ProjectMetadata> projects;
@@ -20,7 +20,7 @@ namespace Brainf1ck_IDE.ViewModels
         private string initialIndexInput = string.Empty;
         [ObservableProperty]
         private string errorMessage = string.Empty;
-        public MainPageModel()
+        public MainPageViewModel()
         {
             projects = StorageReader.RetrieveAllProjectsData()
                 .CleanupFromUnexisting();
@@ -28,11 +28,6 @@ namespace Brainf1ck_IDE.ViewModels
         }
 
         [RelayCommand]
-        void AddProject(ProjectMetadata project)
-        {
-            AppendNewProjectToExisting(project);
-        }
-
         public void AppendNewProjectToExisting(ProjectMetadata project)
         {
             if (!Projects.Contains(project))
@@ -47,16 +42,40 @@ namespace Brainf1ck_IDE.ViewModels
             Projects.SaveProjectsData();
         }
 
-        [RelayCommand]//TODO implement button in xaml to delete the existing project
-        void RemoveProject(ProjectMetadata project)
+        [RelayCommand]
+        async Task RemoveProject(ProjectMetadata project)
         {
-            RemoveProjectFromExisting(project);
+            if (AppShell.Current.CurrentPage is not MainPage mainPage)
+            {
+                return;
+            }
+
+            bool isRemovingConfirmed = await mainPage
+                .DisplayAlert("Removing project from the list",
+                "Note that project files will not be deleted", 
+                "Ok", "Cancel", FlowDirection.LeftToRight);
+            if (isRemovingConfirmed)
+            {
+                RemoveProjectFromExisting(project);
+            }
         }
 
         public void RemoveProjectFromExisting(ProjectMetadata project)
         {
             Projects.Remove(project);
             SaveProjectsList();
+        }
+
+        [RelayCommand]
+        async Task OpenExistingProject(ProjectMetadata project)
+        {
+            if (AppShell.Current.CurrentPage is not MainPage mainPage)
+            {
+                return;
+            }
+            await mainPage.TryOpenExistingProject(
+                StorageReader.RetrieveProjectPropertiesFrom(project.Path),
+                project.Path);
         }
 
         [RelayCommand]
@@ -69,7 +88,8 @@ namespace Brainf1ck_IDE.ViewModels
                 ProjectToCreate.InitialCellIndex = index;
                 ProjectToCreate.MemoryLength = memoryLength;
             }
-            else
+            else if (!string.IsNullOrWhiteSpace(InitialIndexInput)
+                || !string.IsNullOrWhiteSpace(MemoryLengthInput))
             {
                 ErrorMessage = "Wrong input. " +
                     "Memory length and initial index should be positive integer numbers";
@@ -88,16 +108,10 @@ namespace Brainf1ck_IDE.ViewModels
             }
         }
 
-        [RelayCommand]
-        void OpenProject(ProjectMetadata project)
-        {
-            // TODO use it with list of existing projects
-        }
-
         private static bool IsProjectNameValid(string projectName)
         {
             Regex regex = new("^[a-zA-Z0-9_]+$");
-            return !string.IsNullOrEmpty(projectName) 
+            return !string.IsNullOrWhiteSpace(projectName) 
                 && regex.IsMatch(projectName);
         }
         private static bool AreProjectNumeralPropertiesValid(ProjectProperties project)
@@ -106,6 +120,5 @@ namespace Brainf1ck_IDE.ViewModels
                 && project.MemoryLength >= 30000
                 && project.MemoryLength > project.InitialCellIndex;
         }
-
     }
 }

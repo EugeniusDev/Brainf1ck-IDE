@@ -9,11 +9,20 @@ namespace Brainf1ck_IDE.Common.Settings
             return StorageReader.RetrieveGlobalSettings();
         }
 
-        public static void SetNewDefaultFolder(string folderPath)
+        public static void SetNewDefaultProjectFolder(string folderPath)
         {
             GlobalSettings globalSettings = StorageReader.RetrieveGlobalSettings();
             globalSettings.RootFolderForNewProjects = folderPath;
             StorageWriter.SaveGlobalSettings(globalSettings);
+        }
+
+        public static void SetNewDefaultProjectFolderFromSettingsFile(string projectSettingsFilePath)
+        {
+            var projectFolder = Directory.GetParent(projectSettingsFilePath);
+            if (projectFolder is not null && projectFolder.Parent is not null)
+            {
+                SetNewDefaultProjectFolder(projectFolder.Parent.FullName);
+            }
         }
     }
 }

@@ -9,13 +9,13 @@ namespace Brainf1ck_IDE
     public partial class MainPage : ContentPage
     {
         private GlobalSettings globalSettings = SettingsManager.RetrieveGlobalSettings();
-        public MainPage(MainPageModel mainVm)
+        public MainPage(MainPageViewModel mainVm)
         {
             InitializeComponent();
             BindingContext = mainVm;
         }
 
-        private async void CreateProjectBtn_Clicked(object sender, EventArgs e)
+        private async void CreateProjectBtn_Tapped(object sender, TappedEventArgs e)
         {
             Title = "Create new Brainfuck project";
             await MainMenuGrid.ScaleTo(.6, 100);
@@ -33,7 +33,7 @@ namespace Brainf1ck_IDE
             }
         }
 
-        private async void OpenProjectBtn_Clicked(object sender, EventArgs e)
+        private async void OpenProjectBtn_Tapped(object sender, TappedEventArgs e)
         {
             var chosenFile = await FilePicker.PickAsync(
                 new PickOptions{
@@ -41,7 +41,8 @@ namespace Brainf1ck_IDE
                     $"\"{FilePaths.ideRelatedFileExtension}\" extension",
                     FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                     {
-                        {DevicePlatform.Android, new[] { $"{FilePaths.ideRelatedFileExtension}" } },// TODO check if any issues appear because of ideRelatedFileExtension returns extension with dot
+                        // TODO check if any issues appear because of ideRelatedFileExtension returns extension with dot
+                        {DevicePlatform.Android, new[] { $"{FilePaths.ideRelatedFileExtension}" } },
                         {DevicePlatform.WinUI, new[] { $"{FilePaths.ideRelatedFileExtension}" } }
                     })
                 });
@@ -52,7 +53,7 @@ namespace Brainf1ck_IDE
                 return;
             }
 
-            ProjectProperties? projectToOpen = StorageReader.RetrieveProjectFrom(chosenFile.FullPath);
+            ProjectProperties? projectToOpen = StorageReader.RetrieveProjectPropertiesFrom(chosenFile.FullPath);
             if (projectToOpen is null)
             {
                 await DisplayAlert("Selection error",
@@ -60,22 +61,54 @@ namespace Brainf1ck_IDE
                 return;
             }
 
-            MainPageModel viewModel = (MainPageModel)BindingContext;
+            MainPageViewModel viewModel = (MainPageViewModel)BindingContext;
             ProjectMetadata newExistingProject = new()
             {
                 Name = projectToOpen.Name,
                 Path = chosenFile.FullPath
             };
             viewModel.AppendNewProjectToExisting(newExistingProject);
+
+            await TryOpenExistingProject(projectToOpen, newExistingProject.Path);
         }
 
-        private void RootFolderChoosingBtn_Clicked(object sender, EventArgs e)
+        public async Task TryOpenExistingProject(ProjectProperties? project, string projectPropsFilePath)
         {
-            // TODO implement directorypick
-            
-            if (true)
+            if (project is null)
             {
-                SettingsManager.SetNewDefaultFolder("testpath");
+                await DisplayAlert("Project data corrupt", "Can not open project", "Ok");
+                return;
+            }
+
+            SettingsManager
+                .SetNewDefaultProjectFolderFromSettingsFile(projectPropsFilePath);
+            if (!ProjectStructurator.HasValidStructure(project))
+            {
+                await DisplayAlert("Corrupt project structure",
+                    "Looks like project\'s structure have changed. Trying to restore it",
+                    "Ok");
+                ProjectStructurator.RestoreValidStructure(project);
+            }
+
+            await NavigateToProjectPageFor(project);
+        }
+
+        private async Task NavigateToProjectPageFor(ProjectProperties project)
+        {
+            await Shell.Current.GoToAsync(nameof(ProjectPage), true,
+                new Dictionary<string, object>
+                {
+                    {nameof(ProjectProperties), project}
+                });
+        }
+
+        private async void RootFolderChoosingBtn_Clicked(object sender, EventArgs e)
+        {
+            var pickedFolder = await FolderPicker.PickAsync(default);
+            if (pickedFolder is not null && pickedFolder.Folder is not null)
+            {
+                SettingsManager.SetNewDefaultProjectFolder(pickedFolder.Folder.Path);
+                RootFolderLabel.Text = pickedFolder.Folder.Path;
                 globalSettings = SettingsManager.RetrieveGlobalSettings();
             }
         }
@@ -92,7 +125,7 @@ namespace Brainf1ck_IDE
             await MainMenuGrid.ScaleTo(1d, 100);
         }
 
-        private void ConfirmNewProjectBtn_Clicked(object sender, EventArgs e)
+        private async void ConfirmNewProjectBtn_Clicked(object sender, EventArgs e)
         {
             if (!IsRootFolderValid(globalSettings.RootFolderForNewProjects))
             {
@@ -102,11 +135,19 @@ namespace Brainf1ck_IDE
             }
             if (string.IsNullOrEmpty(ErrorLabel.Text))
             {
-                // TODO make extension method for
-                // creating and opening it, if possible
-                DisplayAlert("Test", "Working", "Ok");
-                MainPageModel mainVm = (MainPageModel)BindingContext;
-                mainVm.ProjectToCreate.SaveToFile("test");
+                MainPageViewModel mainVm = (MainPageViewModel)BindingContext;
+                ProjectProperties newProject = mainVm.ProjectToCreate;
+
+                ProjectMetadata newProjMetadata = new()
+                {
+                    Name = newProject.Name,
+                    Path = ProjectStructurator
+                        .FormProjectSettingsPath(newProject)
+                };
+                mainVm.AppendNewProjectToExistingCommand.Execute(newProjMetadata);
+
+                ProjectStructurator.CreateNewProjectStructure(newProject);
+                await NavigateToProjectPageFor(newProject);
             }
         }
 
@@ -117,7 +158,7 @@ namespace Brainf1ck_IDE
 
         private void DefaultFileCheckbox_CheckedChanged(object sender, CheckedChangedEventArgs e)
         {
-            MainPageModel mainVm = (MainPageModel)BindingContext;
+            MainPageViewModel mainVm = (MainPageViewModel)BindingContext;
             bool isCheckboxChecked = e.Value;
             if (isCheckboxChecked)
             {
