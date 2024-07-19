@@ -22,46 +22,59 @@ public partial class ProjectPage : ContentPage
 
     private async void SettingsFrame_Tapped(object sender, TappedEventArgs e)
     {
+        await ToggleNoActiveViewLabel(false);
         await DisplaySettingsView();
+    }
+
+    private async Task ToggleNoActiveViewLabel(bool turnOn)
+    {
+        if (turnOn)
+        {
+            NoActiveViewLabel.IsVisible = true;
+            NoActiveViewLabel.IsEnabled = true;
+            await NoActiveViewLabel.ScaleTo(1d, 100);
+        }
+        else if (NoActiveViewLabel.IsVisible)
+        {
+            await NoActiveViewLabel.ScaleTo(.6, 100);
+            NoActiveViewLabel.IsVisible = false;
+            NoActiveViewLabel.IsEnabled = false;
+        }
     }
 
     private async Task DisplaySettingsView()
     {
-        if (NoActiveViewLabel.IsVisible)
-        {
-            NoActiveViewLabel.IsVisible = false;
-            NoActiveViewLabel.IsEnabled = false;
-        }
-        else
-        {
-            await CodeGrid.ScaleTo(.6, 100);
-            CodeGrid.IsEnabled = false;
-            CodeGrid.IsVisible = false;
-        }
+        await HideCodeView();
 
         SettingsGrid.IsEnabled = true;
         SettingsGrid.IsVisible = true;
         await SettingsGrid.ScaleTo(1d, 100);
     }
 
-    private async void FilesView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async Task HideCodeView()
     {
+        await CodeGrid.ScaleTo(.6, 100);
+        CodeGrid.IsEnabled = false;
+        CodeGrid.IsVisible = false;
+    }
+
+    private async void DeleteFile_Tapped(object sender, TappedEventArgs e)
+    {
+        await HideCodeView();
+        await ToggleNoActiveViewLabel(true);
+    }
+
+    private async void BrainfuckFile_Tapped(object sender, TappedEventArgs e)
+    {
+        await ToggleNoActiveViewLabel(false);
         await DisplayCodeView();
     }
 
     private async Task DisplayCodeView()
     {
-        if (NoActiveViewLabel.IsVisible)
-        {
-            NoActiveViewLabel.IsVisible = false;
-            NoActiveViewLabel.IsEnabled = false;
-        }
-        else
-        {
-            await SettingsGrid.ScaleTo(.6, 100);
-            SettingsGrid.IsEnabled = false;
-            SettingsGrid.IsVisible = false;
-        }
+        await SettingsGrid.ScaleTo(.6, 100);
+        SettingsGrid.IsEnabled = false;
+        SettingsGrid.IsVisible = false;
 
         CodeGrid.IsEnabled = true;
         CodeGrid.IsVisible = true;
@@ -77,7 +90,7 @@ public partial class ProjectPage : ContentPage
             return string.Empty;
         }
 
-        if (FileValidator.IsStringValidForFilesystem(input))
+        if (!FileValidator.IsStringValidForFilesystem(input))
         {
             await DisplayAlert("Invalid file name",
                 "It can contain only English literals, digits and underscore",

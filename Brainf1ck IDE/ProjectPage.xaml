@@ -5,57 +5,64 @@
              xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
              xmlns:fileProcessing="clr-namespace:Brainf1ck_IDE.Common.FileProcessing"
              x:DataType="viewmodel:ProjectPageViewModel">
-    <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill"
-                           Spacing="20">
+    <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="2*,8*">
         <!-- Left panel with list of files etc. -->
-        <Grid VerticalOptions="Fill" RowDefinitions="1*,2*,10*,2*"
-              MinimumWidthRequest="200" Margin="4">
+        <Grid RowDefinitions="1*,2*,10*,2*" ColumnDefinitions="*" VerticalOptions="Fill" Margin="4">
             <!-- Project name -->
             <Label Text="{Binding ProjectProps.Name}" FontSize="Medium"
-                VerticalOptions="Center" HorizontalOptions="Center" />
+           VerticalOptions="Center" HorizontalOptions="Center" />
+
             <!-- File add/delete -->
-            <HorizontalStackLayout Grid.Row="1" MinimumHeightRequest="50" HorizontalOptions="Fill">
-                <Frame Padding="0" MinimumWidthRequest="100">
+            <FlexLayout Grid.Row="1" MinimumHeightRequest="50"
+                           HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                           Margin="0,4" JustifyContent="SpaceEvenly">
+                <Frame Padding="0" Margin="0" MinimumWidthRequest="100"
+                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding AddNewFileCommand}" />
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
-                        HorizontalOptions="Center" VerticalOptions="Center">
+                                   HorizontalOptions="FillAndExpand" VerticalOptions="Center">
                         <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
                         <Label Text="Add" FontSize="Caption" />
                     </HorizontalStackLayout>
                 </Frame>
-                <Frame Padding="0" MinimumWidthRequest="100">
+
+                <Frame Padding="0" Margin="0" MinimumWidthRequest="100"
+                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding DeleteFileCommand}" />
+                        <TapGestureRecognizer Command="{Binding DeleteCurrentFileCommand}"
+                                              Tapped="DeleteFile_Tapped"/>
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
-                        HorizontalOptions="Center" VerticalOptions="Center">
+                                   HorizontalOptions="FillAndExpand" VerticalOptions="Center">
                         <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
                         <Label Text="Delete" FontSize="Caption" />
                     </HorizontalStackLayout>
                 </Frame>
-            </HorizontalStackLayout>
-            <ScrollView Grid.Row="2" MaximumHeightRequest="460" BackgroundColor="#222">
-                <CollectionView ItemsSource="{Binding BrainfuckFiles}" 
-                                SelectedItem="{Binding SelectedFile}"
-                                EmptyView="No .bf files found. Create one"
-                                SelectionMode="Single"
-                                SelectionChangedCommand="{Binding Source={RelativeSource 
-                                           AncestorType={x:Type viewmodel:ProjectPageViewModel}},
-                                           Path=SelectFileCommand}"
-                                SelectionChanged="FilesView_SelectionChanged">
+            </FlexLayout>
+            <ScrollView Grid.Row="2" BackgroundColor="#222"
+                        Margin="4" MaximumHeightRequest="460">
+                <CollectionView ItemsSource="{Binding BrainfuckFiles}"
+                                EmptyView="No .bf files found. Create one">
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="{x:Type fileProcessing:BrainfuckFile}">
                             <Frame Padding="0" MinimumHeightRequest="40">
-                                <Label Text="{Binding Name}" FontSize="Micro" 
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource 
+                                           AncestorType={x:Type viewmodel:ProjectPageViewModel}},
+                                           Path=SelectFileCommand}"
+                                           CommandParameter="{Binding .}"
+                                           Tapped="BrainfuckFile_Tapped"/>
+                                </Frame.GestureRecognizers>
+                                <Label Text="{Binding Name}" FontSize="Micro" Margin="0,0,0,4"
                                        VerticalOptions="Center" HorizontalOptions="Center"/>
                             </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
             </ScrollView>
-            <Frame Grid.Row="3" Padding="0">
+            <Frame Grid.Row="3" Padding="0" Margin="4">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenSettingsViewCommand}" 
                                           Tapped="SettingsFrame_Tapped" />
@@ -67,34 +74,83 @@
                 </HorizontalStackLayout>
             </Frame>
         </Grid>
-        <Label x:Name="NoActiveViewLabel"
+        <Label Grid.Column="1" x:Name="NoActiveViewLabel"
             FontSize="Large" FontAttributes="Bold" LineBreakMode="WordWrap"
             VerticalOptions="Center" HorizontalOptions="Center"
             Text="Add or select a file or open project settings to get started" />
         <!-- Code view -->
-        <Grid x:Name="CodeGrid"
-              VerticalOptions="Fill" RowDefinitions="1*,10*,2*" Margin="4"
+        <Grid Grid.Column="1" x:Name="CodeGrid"
+              VerticalOptions="Fill" RowDefinitions="2*,10*,3*" Margin="4"
               Scale=".6" IsEnabled="False" IsVisible="Collapse">
-            <VerticalStackLayout>
-                <!-- buttons here-->
-            </VerticalStackLayout>
-            <Frame Grid.Row="1">
-                <ScrollView>
-                    <Entry Text="{Binding SelectedFile.Contents}" FontSize="Micro"/>
-                </ScrollView>                
+            <FlexLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
+                Margin="0,4" JustifyContent="SpaceEvenly" Padding="2">
+                <!-- TODO Make template for this frame and reuse it -->
+                <Frame Padding="0" Margin="0" MinimumWidthRequest="140"
+                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NotImplementedCommand}" />
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Label Margin="16" Text="Paste snippet" FontSize="Micro" />
+                    </HorizontalStackLayout>
+                </Frame>
+                <Frame Padding="0" Margin="0" MinimumWidthRequest="220"
+                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NotImplementedCommand}" />
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Label Margin="16" Text="Visualize" FontSize="Micro" />
+                    </HorizontalStackLayout>
+                </Frame>
+                <Frame Padding="0" Margin="0" MinimumWidthRequest="70"
+                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ExecuteCodeCommand}" />
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Label Margin="16" Text="Run" FontSize="Micro" />
+                    </HorizontalStackLayout>
+                </Frame>
+                <Frame Padding="0" Margin="0" MinimumWidthRequest="100"
+                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NotImplementedCommand}" />
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Label Margin="16" Text="Optimize" FontSize="Micro" />
+                    </HorizontalStackLayout>
+                </Frame>
+            </FlexLayout>
+            <Frame Grid.Row="1" Padding="0" Margin="4">
+                <ScrollView Padding="0" Orientation="Vertical" HorizontalOptions="Fill">
+                    <Editor Margin="0" VerticalTextAlignment="Start"
+                           IsSpellCheckEnabled="False" IsTextPredictionEnabled="False"
+                           Text="{Binding SelectedFile.Contents}" FontSize="Micro"/>
+                </ScrollView>
             </Frame>
-            <Frame Grid.Row="2" Padding="0">
-                <Grid RowDefinitions="1*,5*">
-                    <Label Text="Output" FontSize="Caption" BackgroundColor="#222"
-                           VerticalOptions="Fill" HorizontalOptions="Fill"/>
-                    <Label Grid.Row="1" BackgroundColor="#333"
-                           Text="Later add something here" FontSize="Caption"
-                           VerticalOptions="Fill" HorizontalOptions="Fill"/>
+            <Frame Grid.Row="2" Padding="0" Margin="4">
+                <Grid RowDefinitions="2*,6*" BackgroundColor="#222">
+                    <Label Text="Output" FontSize="Caption" 
+                           VerticalOptions="Center" Margin="20,0,0,0"/>
+                    <ScrollView Grid.Row="1" BackgroundColor="#333">
+                        <Label Text="{Binding Output}" Margin="6"
+                               TextColor="{Binding OutputColor}"
+                               FontSize="Caption" LineBreakMode="WordWrap"/>                        
+                    </ScrollView>
                 </Grid>
             </Frame>
         </Grid>
         <!-- Settings view -->
-        <Grid x:Name="SettingsGrid" Margin="4"
+        <Grid Grid.Column="1" x:Name="SettingsGrid" Margin="4"
             Padding="30" Scale=".6" IsEnabled="False" IsVisible="Collapse"
             ColumnDefinitions="1*,3*,1*" RowDefinitions="4*,1*" HorizontalOptions="Fill" VerticalOptions='Fill'>
             <VerticalStackLayout Grid.ColumnSpan="3" Spacing="40" Margin="0,0,0,50" HorizontalOptions="Center">
@@ -122,5 +178,5 @@
             <Button Grid.Row="1" Grid.Column="2" Text="Save new settings"
                 Command="{Binding TrySaveNewSettingsCommand}" />
         </Grid>
-    </HorizontalStackLayout>
+    </Grid>
 </ContentPage>

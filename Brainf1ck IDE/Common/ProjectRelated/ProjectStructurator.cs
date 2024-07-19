@@ -8,21 +8,18 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
     {
         public static bool HasValidStructure(ProjectProperties project)
         {
-            bool runnableFileIsFine = project.TargetFileName is null
-                || File.Exists(project.TargetFileName);
             return Path.Exists(FormProjectFolderPath(project))
                 && Path.Exists(FormProjectSettingsPath(project))
-                && Path.Exists(FormProjectFilesFolderPath(project))
-                && runnableFileIsFine;
+                && Path.Exists(FormProjectFilesFolderPath(project));
         }
 
         public static void CreateNewProjectStructure(ProjectProperties project)
         {
-            CreateFoldersAndMainFile(project);
+            CreateRequiredFolders(project);
             project.SaveToFile(FormProjectSettingsPath(project));            
         }
 
-        private static void CreateFoldersAndMainFile(ProjectProperties project)
+        private static void CreateRequiredFolders(ProjectProperties project)
         {
             GlobalSettings settings = StorageReader.RetrieveGlobalSettings();
             if (settings.RootFolderForNewProjects is null)
@@ -33,16 +30,14 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
             string projectFilesFolder = FormProjectFilesFolderPath(project);
             Directory.CreateDirectory(FormProjectFolderPath(project));
             Directory.CreateDirectory(projectFilesFolder);
-            if (project.TargetFileName is not null)
-            {
-                string mainFilePath = Path.Combine(projectFilesFolder,
-                    project.TargetFileName);
-                if (!File.Exists(mainFilePath))
-                {
-                    string helloWorldCode = BrainfuckSnippets.helloWorldSnippet;
-                    StorageWriter.SaveFile(mainFilePath, helloWorldCode);
-                }
-            }
+        }
+
+        public static void CreateWelcomeFileFor(ProjectProperties project)
+        {
+            string mainFilePath = Path.Combine(FormProjectFilesFolderPath(project),
+                FilePaths.welcomeScriptFileName);
+            string helloWorldCode = BrainfuckSnippets.helloWorldSnippet;
+            StorageWriter.SaveFile(mainFilePath, helloWorldCode);
         }
 
         public static string FormProjectFolderPath(ProjectProperties project)
@@ -80,7 +75,7 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
 
         public static void RestoreValidStructure(ProjectProperties project)
         {
-            CreateFoldersAndMainFile(project);
+            CreateRequiredFolders(project);
         }
     }
 }

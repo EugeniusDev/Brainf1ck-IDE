@@ -7,13 +7,7 @@ namespace Brainf1ck_IDE.Domain
     {
         private readonly ProjectProperties projectProperties = projectProperties;
 
-        public bool SuccessfullyParsed(string bfCode)
-        {
-            // TODO implement checks on corresponding [] and <> etc
-            return false;
-        }
-
-        public string ParseFromBrainfuck(string bfInput)
+        public string Execute(string bfInput)
         {
             byte[] memory = new byte[projectProperties.MemoryLength];
             uint cellIndex = projectProperties.InitialCellIndex;

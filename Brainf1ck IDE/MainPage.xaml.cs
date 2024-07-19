@@ -9,6 +9,7 @@ namespace Brainf1ck_IDE
     public partial class MainPage : ContentPage
     {
         private GlobalSettings globalSettings = SettingsManager.RetrieveGlobalSettings();
+        private bool shouldCreateWelcomeFileInNewProject = true;
         public MainPage(MainPageViewModel mainVm)
         {
             InitializeComponent();
@@ -156,6 +157,10 @@ namespace Brainf1ck_IDE
                 mainVm.AppendNewProjectToExistingCommand.Execute(newProjMetadata);
 
                 ProjectStructurator.CreateNewProjectStructure(newProject);
+                if (shouldCreateWelcomeFileInNewProject)
+                {
+                    ProjectStructurator.CreateWelcomeFileFor(newProject);
+                }
                 await DisplayMainMenuView();
                 await NavigateToProjectPageFor(newProject);
             }
@@ -166,18 +171,9 @@ namespace Brainf1ck_IDE
             return path is not null && Directory.Exists(path);
         }
 
-        private void DefaultFileCheckbox_CheckedChanged(object sender, CheckedChangedEventArgs e)
+        private void CreateWelcomeFileCheckbox_CheckedChanged(object sender, CheckedChangedEventArgs e)
         {
-            MainPageViewModel mainVm = (MainPageViewModel)BindingContext;
-            bool isCheckboxChecked = e.Value;
-            if (isCheckboxChecked)
-            {
-                mainVm.ProjectToCreate.SetBackDefaultFileToRun();
-            }
-            else
-            {
-                mainVm.ProjectToCreate.TargetFileName = null;
-            }
+            shouldCreateWelcomeFileInNewProject = e.Value;
         }
     }
 }

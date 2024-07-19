@@ -1,8 +1,9 @@
-﻿using Brainf1ck_IDE.Common.FileProcessing;
+﻿using Brainf1ck_IDE.Common;
+using Brainf1ck_IDE.Common.FileProcessing;
 using Brainf1ck_IDE.Common.ProjectRelated;
+using Brainf1ck_IDE.Domain;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.ObjectModel;
 
 namespace Brainf1ck_IDE.ViewModels
@@ -19,15 +20,23 @@ namespace Brainf1ck_IDE.ViewModels
         private string initialIndexInput = string.Empty;
         [ObservableProperty]
         private string errorMessage = string.Empty;
+        [ObservableProperty]
+        private string output = $"Welcome to {AppInfoHelper.GetAppName()}, " +
+            $"version {AppInfoHelper.GetAppVersion()}. Have a nice brainfucking session!";
+        [ObservableProperty]
+        private Color outputColor = Colors.AliceBlue;
 
         [ObservableProperty]
         private ObservableCollection<BrainfuckFile> brainfuckFiles = [];
+        [ObservableProperty]
+        private BrainfuckFile selectedFile = new();
 
         private string filesFolderPath = string.Empty;
         private string projectSettingsPath = string.Empty;
 
-        [ObservableProperty]
-        private BrainfuckFile selectedFile = new();
+        private BrainfuckExecutor brainfuckExecutor = new(new());
+        private BrainfuckErrorParser brainfuckErrorParser = new(new());
+
         public void ConfigureViewModel()
         {
             MemoryLengthInput = ProjectProps.MemoryLength.ToString();
@@ -37,14 +46,8 @@ namespace Brainf1ck_IDE.ViewModels
             projectSettingsPath = ProjectStructurator
                 .FormProjectSettingsPath(ProjectProps);
             BrainfuckFiles = RetrieveBrainfuckFilesData();
-
-            if (ProjectProps.TargetFileName is not null)
-            {
-                BrainfuckFile targetFile = BrainfuckFiles
-                    .First(file =>
-                        file.Name.Equals(ProjectProps.TargetFileName));
-                SelectFile(targetFile);
-            }
+            brainfuckExecutor = new(ProjectProps);
+            brainfuckErrorParser = new(ProjectProps);
         }
 
         private ObservableCollection<BrainfuckFile> RetrieveBrainfuckFilesData()
@@ -91,20 +94,10 @@ namespace Brainf1ck_IDE.ViewModels
         [RelayCommand]
         void SelectFile(BrainfuckFile newSelectedFile)
         {
-            if (SelectedFile is not null)
+            if (!SelectedFile.Name.Equals(newSelectedFile.Name))
             {
                 SaveSelectedFile();
-            }
-
-            SelectedFile = newSelectedFile;
-        }
-
-        [RelayCommand]
-        void SelectFileTest(string newSelectedFile)
-        {
-            if (AppShell.Current.CurrentPage is ProjectPage projectPage)
-            {
-                projectPage.DisplayAlert("yeah", "it\'s string issue", "Ok");
+                SelectedFile = newSelectedFile;
             }
         }
 
@@ -166,18 +159,18 @@ namespace Brainf1ck_IDE.ViewModels
         }
 
         [RelayCommand]
-        async Task DeleteFile(BrainfuckFile chosenFile)
+        async Task DeleteCurrentFile()
         {
             if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
             {
                 return;
             }
             bool deletionConfirmed = await projectPage.DisplayAlert("Delete selected file",
-                "Selected file will be permanently deleted", "Ok", "Cancel");
+                $"\"{SelectedFile.Name}\" will be permanently deleted", "Ok", "Cancel");
             if (deletionConfirmed)
             {
-                BrainfuckFiles.Remove(chosenFile);
-                string filePath = FormBrainfuckFilePath(chosenFile);
+                BrainfuckFiles.Remove(SelectedFile);
+                string filePath = FormBrainfuckFilePath(SelectedFile);
                 Deleter.TryDeleteFile(filePath);
             }
         }
@@ -188,11 +181,90 @@ namespace Brainf1ck_IDE.ViewModels
 
         }
 
+        [RelayCommand]
+        void VisualizeCodeExecution()
+        {
+            if (brainfuckErrorParser
+                    .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
+            {
+                WriteOutput("TODO Find error and display it", BrainfuckOutputTypes.Error);
+                return;
+            }
+            //TODO implement
+        }
+
+        void WriteOutput(string output, BrainfuckOutputTypes type)
+        {
+            switch (type)
+            {
+                case BrainfuckOutputTypes.Output:
+                    OutputColor = Colors.LawnGreen;
+                    break;
+                case BrainfuckOutputTypes.Warning:
+                    OutputColor = Colors.Yellow;
+                    break;
+                case BrainfuckOutputTypes.Error:
+                    OutputColor = Colors.Red;
+                    break;
+            }
+
+            Output = output;
+        }
+
+        [RelayCommand]
+        void ExecuteCode()
+        {
+            if (brainfuckErrorParser
+                    .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
+            {
+                WriteOutput("TODO Find error and display it", BrainfuckOutputTypes.Error);
+                return;
+            }
+
+            string executionOutput = brainfuckExecutor
+                .Execute(SelectedFile.Contents);
+            if (string.IsNullOrEmpty(executionOutput))
+            {
+                WriteOutput("Your code outputs nothing. " +
+                    "Did you forget to write \".\" at the end?",
+                    BrainfuckOutputTypes.Warning);
+            }
+            else
+            {
+                WriteOutput(executionOutput, BrainfuckOutputTypes.Output);
+            }
+        }
+
+        [RelayCommand]
+        void OptimizeCode()
+        {
+            if (brainfuckErrorParser
+                .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
+            {
+                WriteOutput("TODO Find error and display it", BrainfuckOutputTypes.Error);
+                return;
+            }
+            //TODO implement
+
+
+        }
+
         public void SaveAllFiles()
         {
             foreach (var file in BrainfuckFiles)
             {
                 SaveBrainfuckFile(file);
+            }
+        }
+
+        [RelayCommand]
+        void NotImplemented()
+        {
+            if (AppShell.Current.CurrentPage is ProjectPage projectPage)
+            {
+                projectPage.DisplayAlert("Coming soon...",
+                    "This functionality is not yet implemented",
+                    "Ok, good luck");
             }
         }
     }

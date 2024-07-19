@@ -3,7 +3,7 @@
     public static class FilePaths
     {
         public const string ideRelatedFileExtension = ".bfide";
-        public const string welcomeScriptFile = "main.bf";
+        public const string welcomeScriptFileName = "main.bf";
 
         public static readonly string projectsDataList = Path.Combine(
             FileSystem.AppDataDirectory, $"projectsList{ideRelatedFileExtension}");

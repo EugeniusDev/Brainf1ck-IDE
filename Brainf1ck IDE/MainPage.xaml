@@ -113,7 +113,7 @@
                     <!-- Determine if default file should be created -->
                     <HorizontalStackLayout Spacing="10">
                         <CheckBox IsChecked="True" x:Name="DefaultFileCheckbox"
-                              CheckedChanged="DefaultFileCheckbox_CheckedChanged" />
+                              CheckedChanged="CreateWelcomeFileCheckbox_CheckedChanged" />
                         <Label Text="Create sample main.bf script" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                     <!-- Determine memory length -->
