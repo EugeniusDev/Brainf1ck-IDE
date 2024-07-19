@@ -61,13 +61,15 @@ namespace Brainf1ck_IDE
                 return;
             }
 
-            MainPageViewModel viewModel = (MainPageViewModel)BindingContext;
             ProjectMetadata newExistingProject = new()
             {
                 Name = projectToOpen.Name,
                 Path = chosenFile.FullPath
             };
-            viewModel.AppendNewProjectToExisting(newExistingProject);
+            if (BindingContext is MainPageViewModel viewModel)
+            {
+                viewModel.AppendNewProjectToExisting(newExistingProject);
+            }
 
             await TryOpenExistingProject(projectToOpen, newExistingProject.Path);
         }
@@ -95,7 +97,9 @@ namespace Brainf1ck_IDE
 
         private async Task NavigateToProjectPageFor(ProjectProperties project)
         {
-            await Shell.Current.GoToAsync(nameof(ProjectPage), true,
+            await Shell.Current.GoToAsync(
+                $"{nameof(ProjectPage)}?{nameof(ProjectProperties)}={project}",
+                true,
                 new Dictionary<string, object>
                 {
                     {nameof(ProjectProperties), project}
@@ -114,6 +118,11 @@ namespace Brainf1ck_IDE
         }
 
         private async void CancelNewProjectBtn_Clicked(object sender, EventArgs e)
+        {
+            await DisplayMainMenuView();
+        }
+
+        private async Task DisplayMainMenuView()
         {
             Title = "Brainfuck IDE";
             await NewProjectGrid.ScaleTo(.6, 100);
@@ -147,6 +156,7 @@ namespace Brainf1ck_IDE
                 mainVm.AppendNewProjectToExistingCommand.Execute(newProjMetadata);
 
                 ProjectStructurator.CreateNewProjectStructure(newProject);
+                await DisplayMainMenuView();
                 await NavigateToProjectPageFor(newProject);
             }
         }
@@ -166,7 +176,7 @@ namespace Brainf1ck_IDE
             }
             else
             {
-                mainVm.ProjectToCreate.FileToRun = null;
+                mainVm.ProjectToCreate.TargetFileName = null;
             }
         }
     }

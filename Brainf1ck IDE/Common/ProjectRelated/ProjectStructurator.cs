@@ -8,8 +8,8 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
     {
         public static bool HasValidStructure(ProjectProperties project)
         {
-            bool runnableFileIsFine = project.FileToRun is null
-                || File.Exists(project.FileToRun);
+            bool runnableFileIsFine = project.TargetFileName is null
+                || File.Exists(project.TargetFileName);
             return Path.Exists(FormProjectFolderPath(project))
                 && Path.Exists(FormProjectSettingsPath(project))
                 && Path.Exists(FormProjectFilesFolderPath(project))
@@ -33,10 +33,10 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
             string projectFilesFolder = FormProjectFilesFolderPath(project);
             Directory.CreateDirectory(FormProjectFolderPath(project));
             Directory.CreateDirectory(projectFilesFolder);
-            if (project.FileToRun is not null)
+            if (project.TargetFileName is not null)
             {
                 string mainFilePath = Path.Combine(projectFilesFolder,
-                    project.FileToRun);
+                    project.TargetFileName);
                 if (!File.Exists(mainFilePath))
                 {
                     string helloWorldCode = BrainfuckSnippets.helloWorldSnippet;

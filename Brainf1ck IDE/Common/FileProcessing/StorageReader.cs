@@ -63,5 +63,25 @@ namespace Brainf1ck_IDE.Common.FileProcessing
 
             return new();
         }
+
+        public static BrainfuckFile RetrieveBrainfuckFile(string filePath)
+        {
+            string fileName = Path.GetFileName(filePath);
+            return new BrainfuckFile
+            {
+                Name = fileName,
+                Contents = RetrieveFileContent(filePath)
+            };
+        }
+
+        public static string RetrieveFileContent(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                return File.ReadAllText(filePath);
+            }
+
+            return string.Empty;
+        }
     }
 }

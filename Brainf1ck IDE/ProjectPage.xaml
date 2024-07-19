@@ -3,15 +3,124 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Brainf1ck_IDE.ProjectPage"
              xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
+             xmlns:fileProcessing="clr-namespace:Brainf1ck_IDE.Common.FileProcessing"
              x:DataType="viewmodel:ProjectPageViewModel">
-    <VerticalStackLayout>
-        <Label 
-            Text="{Binding ProjectProps.Name}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-        <Label 
-            Text="sdfdsfsdfsdf}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <HorizontalStackLayout HorizontalOptions="Fill" VerticalOptions="Fill"
+                           Spacing="20">
+        <!-- Left panel with list of files etc. -->
+        <Grid VerticalOptions="Fill" RowDefinitions="1*,2*,10*,2*"
+              MinimumWidthRequest="200" Margin="4">
+            <!-- Project name -->
+            <Label Text="{Binding ProjectProps.Name}" FontSize="Medium"
+                VerticalOptions="Center" HorizontalOptions="Center" />
+            <!-- File add/delete -->
+            <HorizontalStackLayout Grid.Row="1" MinimumHeightRequest="50" HorizontalOptions="Fill">
+                <Frame Padding="0" MinimumWidthRequest="100">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddNewFileCommand}" />
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
+                        <Label Text="Add" FontSize="Caption" />
+                    </HorizontalStackLayout>
+                </Frame>
+                <Frame Padding="0" MinimumWidthRequest="100">
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding DeleteFileCommand}" />
+                    </Frame.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="12"
+                        HorizontalOptions="Center" VerticalOptions="Center">
+                        <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
+                        <Label Text="Delete" FontSize="Caption" />
+                    </HorizontalStackLayout>
+                </Frame>
+            </HorizontalStackLayout>
+            <ScrollView Grid.Row="2" MaximumHeightRequest="460" BackgroundColor="#222">
+                <CollectionView ItemsSource="{Binding BrainfuckFiles}" 
+                                SelectedItem="{Binding SelectedFile}"
+                                EmptyView="No .bf files found. Create one"
+                                SelectionMode="Single"
+                                SelectionChangedCommand="{Binding Source={RelativeSource 
+                                           AncestorType={x:Type viewmodel:ProjectPageViewModel}},
+                                           Path=SelectFileCommand}"
+                                SelectionChanged="FilesView_SelectionChanged">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="{x:Type fileProcessing:BrainfuckFile}">
+                            <Frame Padding="0" MinimumHeightRequest="40">
+                                <Label Text="{Binding Name}" FontSize="Micro" 
+                                       VerticalOptions="Center" HorizontalOptions="Center"/>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
+            <Frame Grid.Row="3" Padding="0">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding OpenSettingsViewCommand}" 
+                                          Tapped="SettingsFrame_Tapped" />
+                </Frame.GestureRecognizers>
+                <HorizontalStackLayout Spacing="12"
+                    HorizontalOptions="Center" VerticalOptions="Center">
+                    <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
+                    <Label Text="Settings" FontSize="Small" />
+                </HorizontalStackLayout>
+            </Frame>
+        </Grid>
+        <Label x:Name="NoActiveViewLabel"
+            FontSize="Large" FontAttributes="Bold" LineBreakMode="WordWrap"
+            VerticalOptions="Center" HorizontalOptions="Center"
+            Text="Add or select a file or open project settings to get started" />
+        <!-- Code view -->
+        <Grid x:Name="CodeGrid"
+              VerticalOptions="Fill" RowDefinitions="1*,10*,2*" Margin="4"
+              Scale=".6" IsEnabled="False" IsVisible="Collapse">
+            <VerticalStackLayout>
+                <!-- buttons here-->
+            </VerticalStackLayout>
+            <Frame Grid.Row="1">
+                <ScrollView>
+                    <Entry Text="{Binding SelectedFile.Contents}" FontSize="Micro"/>
+                </ScrollView>                
+            </Frame>
+            <Frame Grid.Row="2" Padding="0">
+                <Grid RowDefinitions="1*,5*">
+                    <Label Text="Output" FontSize="Caption" BackgroundColor="#222"
+                           VerticalOptions="Fill" HorizontalOptions="Fill"/>
+                    <Label Grid.Row="1" BackgroundColor="#333"
+                           Text="Later add something here" FontSize="Caption"
+                           VerticalOptions="Fill" HorizontalOptions="Fill"/>
+                </Grid>
+            </Frame>
+        </Grid>
+        <!-- Settings view -->
+        <Grid x:Name="SettingsGrid" Margin="4"
+            Padding="30" Scale=".6" IsEnabled="False" IsVisible="Collapse"
+            ColumnDefinitions="1*,3*,1*" RowDefinitions="4*,1*" HorizontalOptions="Fill" VerticalOptions='Fill'>
+            <VerticalStackLayout Grid.ColumnSpan="3" Spacing="40" Margin="0,0,0,50" HorizontalOptions="Center">
+                <Label Text="{Binding ProjectProps.Name}" FontSize="Medium" VerticalOptions="Center" />
+                <HorizontalStackLayout Spacing="50">
+                    <!-- Change memory length -->
+                    <HorizontalStackLayout Spacing="20">
+                        <Label Text="Memory length:" VerticalOptions="Center" />
+                        <Entry Text="{Binding MemoryLengthInput}"
+                            MaximumWidthRequest="100" Keyboard="Numeric"
+                            Placeholder="30000" PlaceholderColor="#444" />
+                    </HorizontalStackLayout>
+                    <!-- Change initial cell index -->
+                    <HorizontalStackLayout Spacing="20">
+                        <Label Text="Initial cell index:" VerticalOptions="Center" />
+                        <Entry Text="{Binding InitialIndexInput}"
+                            MaximumWidthRequest="100" Keyboard="Numeric"
+                            Placeholder="0" PlaceholderColor="#444" />
+                    </HorizontalStackLayout>
+                </HorizontalStackLayout>
+                <Label Text="{Binding ErrorMessage}" x:Name="ErrorLabel"
+                    TextColor="#aa2222" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+            <!-- Save changes -->
+            <Button Grid.Row="1" Grid.Column="2" Text="Save new settings"
+                Command="{Binding TrySaveNewSettingsCommand}" />
+        </Grid>
+    </HorizontalStackLayout>
 </ContentPage>

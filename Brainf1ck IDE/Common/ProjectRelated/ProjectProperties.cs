@@ -7,11 +7,17 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
         public string Name { get; set; } = string.Empty;
         public uint MemoryLength { get; set; } = 30000;
         public uint InitialCellIndex { get; set; } = 0;
-        public string? FileToRun { get; set; } = FilePaths.welcomeScriptFile;
+        public string? TargetFileName { get; set; } = FilePaths.welcomeScriptFile;
 
         public void SetBackDefaultFileToRun()
         {
-            FileToRun = FilePaths.welcomeScriptFile;
+            TargetFileName = FilePaths.welcomeScriptFile;
+        }
+        public bool AreNumeralPropertiesValid()
+        {
+            return InitialCellIndex >= 0
+                && MemoryLength >= 30000
+                && MemoryLength > InitialCellIndex;
         }
     }
 }

@@ -108,8 +108,9 @@
                         </HorizontalStackLayout>
                     </Frame>
                 </HorizontalStackLayout>
-                <!-- Determine if default file should be created -->
+                <!-- Other settings -->
                 <HorizontalStackLayout Spacing="50">
+                    <!-- Determine if default file should be created -->
                     <HorizontalStackLayout Spacing="10">
                         <CheckBox IsChecked="True" x:Name="DefaultFileCheckbox"
                               CheckedChanged="DefaultFileCheckbox_CheckedChanged" />
@@ -121,7 +122,6 @@
                         <Entry Text="{Binding MemoryLengthInput}"
                            MaximumWidthRequest="100" Keyboard="Numeric"
                            Placeholder="30000" PlaceholderColor="#444" />
-                        <!--Text="{Binding ProjectToCreate.MemoryLength}"-->
                     </HorizontalStackLayout>
                     <!-- Determine initial cell index -->
                     <HorizontalStackLayout Spacing="20">                        
