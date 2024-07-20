@@ -4,64 +4,49 @@
              x:Class="Brainf1ck_IDE.ProjectPage"
              xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
              xmlns:fileProcessing="clr-namespace:Brainf1ck_IDE.Common.FileProcessing"
-             x:DataType="viewmodel:ProjectPageViewModel">
+             x:DataType="viewmodel:ProjectPageViewModel"
+             BackgroundColor="{StaticResource PrimaryDark}">
+    
     <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="2*,8*">
         <!-- Left panel with list of files etc. -->
         <Grid RowDefinitions="1*,2*,10*,2*" ColumnDefinitions="*" VerticalOptions="Fill" Margin="4">
             <!-- Project name -->
             <Label Text="{Binding ProjectProps.Name}" FontSize="Medium"
-           VerticalOptions="Center" HorizontalOptions="Center" />
-
+                VerticalOptions="Center" HorizontalOptions="Center" />
             <!-- File add/delete -->
             <FlexLayout Grid.Row="1" MinimumHeightRequest="50"
                            HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                            Margin="0,4" JustifyContent="SpaceEvenly">
-                <Frame Padding="0" Margin="0" MinimumWidthRequest="100"
-                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding AddNewFileCommand}" />
-                    </Frame.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="12"
-                                   HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-                        <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
-                        <Label Text="Add" FontSize="Caption" />
-                    </HorizontalStackLayout>
-                </Frame>
-
-                <Frame Padding="0" Margin="0" MinimumWidthRequest="100"
-                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding DeleteCurrentFileCommand}"
-                                              Tapped="DeleteFile_Tapped"/>
-                    </Frame.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="12"
-                                   HorizontalOptions="FillAndExpand" VerticalOptions="Center">
-                        <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
-                        <Label Text="Delete" FontSize="Caption" />
-                    </HorizontalStackLayout>
-                </Frame>
+                <Button Text="Add file" FontSize="Caption" MinimumWidthRequest="90"
+                        Command="{Binding AddNewFileCommand}" />
+                <Button Text="Delete file" FontSize="Caption" MinimumWidthRequest="90"
+                        Command="{Binding DeleteCurrentFileCommand}" />
             </FlexLayout>
-            <ScrollView Grid.Row="2" BackgroundColor="#222"
-                        Margin="4" MaximumHeightRequest="460">
-                <CollectionView ItemsSource="{Binding BrainfuckFiles}"
+            <!-- List of files -->
+            <Frame Grid.Row="2" BackgroundColor="{StaticResource BackgroundElements}"
+                        Margin="4" Padding="0">
+                <ScrollView Padding="0" Margin="0" MaximumHeightRequest="460">
+                    <CollectionView ItemsSource="{Binding BrainfuckFiles}" HorizontalOptions="Center"
                                 EmptyView="No .bf files found. Create one">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="{x:Type fileProcessing:BrainfuckFile}">
-                            <Frame Padding="0" MinimumHeightRequest="40">
-                                <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource 
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="{x:Type fileProcessing:BrainfuckFile}">
+                                <Frame Padding="0" MinimumHeightRequest="40">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource 
                                            AncestorType={x:Type viewmodel:ProjectPageViewModel}},
                                            Path=SelectFileCommand}"
                                            CommandParameter="{Binding .}"
                                            Tapped="BrainfuckFile_Tapped"/>
-                                </Frame.GestureRecognizers>
-                                <Label Text="{Binding Name}" FontSize="Micro" Margin="0,0,0,4"
+                                    </Frame.GestureRecognizers>
+                                    <Label Text="{Binding Name}" FontSize="Micro" Margin="0,0,0,4"
                                        VerticalOptions="Center" HorizontalOptions="Center"/>
-                            </Frame>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
-            </ScrollView>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </ScrollView>
+            </Frame>
+            <!-- Settings button -->
             <Frame Grid.Row="3" Padding="0" Margin="4">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenSettingsViewCommand}" 
@@ -69,7 +54,7 @@
                 </Frame.GestureRecognizers>
                 <HorizontalStackLayout Spacing="12"
                     HorizontalOptions="Center" VerticalOptions="Center">
-                    <Image Source="Resources/Images/dotnet_bot.png" Margin="10" MaximumWidthRequest="50"/>
+                    <Image Source="Resources/Images/settings_button.png" Margin="10" MaximumWidthRequest="50"/>
                     <Label Text="Settings" FontSize="Small" />
                 </HorizontalStackLayout>
             </Frame>
@@ -85,6 +70,7 @@
             <FlexLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                 Margin="0,4" JustifyContent="SpaceEvenly" Padding="2">
                 <!-- TODO Make template for this frame and reuse it -->
+                <!-- Paste snippet button -->
                 <Frame Padding="0" Margin="0" MinimumWidthRequest="140"
                     HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Frame.GestureRecognizers>
@@ -92,10 +78,11 @@
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Image Source="Resources/Images/paste_snippet_button.png" Margin="16" MaximumWidthRequest="50"/>
                         <Label Margin="16" Text="Paste snippet" FontSize="Micro" />
                     </HorizontalStackLayout>
                 </Frame>
+                <!-- Visualize button -->
                 <Frame Padding="0" Margin="0" MinimumWidthRequest="220"
                     HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Frame.GestureRecognizers>
@@ -103,10 +90,11 @@
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Image Source="Resources/Images/visualize_button.png" Margin="16" MaximumWidthRequest="50"/>
                         <Label Margin="16" Text="Visualize" FontSize="Micro" />
                     </HorizontalStackLayout>
                 </Frame>
+                <!-- Run button -->
                 <Frame Padding="0" Margin="0" MinimumWidthRequest="70"
                     HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Frame.GestureRecognizers>
@@ -114,35 +102,41 @@
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Image Source="Resources/Images/run_button.png" Margin="16" MaximumWidthRequest="50"/>
                         <Label Margin="16" Text="Run" FontSize="Micro" />
                     </HorizontalStackLayout>
                 </Frame>
-                <Frame Padding="0" Margin="0" MinimumWidthRequest="100"
+                <!-- Optimize button -->
+                <Frame Padding="0" Margin="0"
                     HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding NotImplementedCommand}" />
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/dotnet_bot.png" Margin="16" MaximumWidthRequest="50"/>
+                        <Image Source="Resources/Images/optimize_button.png" WidthRequest="50" HeightRequest="50"
+                               Aspect="AspectFill" />
                         <Label Margin="16" Text="Optimize" FontSize="Micro" />
                     </HorizontalStackLayout>
                 </Frame>
             </FlexLayout>
-            <Frame Grid.Row="1" Padding="0" Margin="4">
-                <ScrollView Padding="0" Orientation="Vertical" HorizontalOptions="Fill">
-                    <Editor Margin="0" VerticalTextAlignment="Start"
+            <!-- Code editor -->
+            <Frame Grid.Row="1" Padding="0" Margin="4" VerticalOptions="Fill">
+                <ScrollView Padding="0" HorizontalOptions="Fill" VerticalScrollBarVisibility="Always">
+                    <Editor Margin="0" VerticalTextAlignment="Start" BackgroundColor="{StaticResource CodeEditor}"
+                           VerticalOptions="Fill"
                            IsSpellCheckEnabled="False" IsTextPredictionEnabled="False"
-                           Text="{Binding SelectedFile.Contents}" FontSize="Micro"/>
+                           Text="{Binding SelectedFile.Contents}"
+                           FontSize="Micro" FontFamily="monospace"/>
                 </ScrollView>
             </Frame>
+            <!-- Code output-->
             <Frame Grid.Row="2" Padding="0" Margin="4">
-                <Grid RowDefinitions="2*,6*" BackgroundColor="#222">
-                    <Label Text="Output" FontSize="Caption" 
+                <Grid RowDefinitions="2*,6*" BackgroundColor="#222233">
+                    <Label Text="Output" FontSize="Caption" FontFamily="monospace"
                            VerticalOptions="Center" Margin="20,0,0,0"/>
-                    <ScrollView Grid.Row="1" BackgroundColor="#333">
-                        <Label Text="{Binding Output}" Margin="6"
+                    <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundElements}">
+                        <Label Text="{Binding Output}" Margin="6" FontFamily="monospace"
                                TextColor="{Binding OutputColor}"
                                FontSize="Caption" LineBreakMode="WordWrap"/>                        
                     </ScrollView>
@@ -152,21 +146,23 @@
         <!-- Settings view -->
         <Grid Grid.Column="1" x:Name="SettingsGrid" Margin="4"
             Padding="30" Scale=".6" IsEnabled="False" IsVisible="Collapse"
-            ColumnDefinitions="1*,3*,1*" RowDefinitions="4*,1*" HorizontalOptions="Fill" VerticalOptions='Fill'>
-            <VerticalStackLayout Grid.ColumnSpan="3" Spacing="40" Margin="0,0,0,50" HorizontalOptions="Center">
-                <Label Text="{Binding ProjectProps.Name}" FontSize="Medium" VerticalOptions="Center" />
-                <HorizontalStackLayout Spacing="50">
+            RowDefinitions="2*,5*,1*" HorizontalOptions="Fill" VerticalOptions='Fill'>
+                <Label Text="{Binding ProjectProps.Name}" FontSize="Large" 
+                       VerticalOptions="Center" HorizontalOptions="Center" />
+            <VerticalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="70">
                     <!-- Change memory length -->
                     <HorizontalStackLayout Spacing="20">
-                        <Label Text="Memory length:" VerticalOptions="Center" />
-                        <Entry Text="{Binding MemoryLengthInput}"
+                        <Label Text="Memory length:" VerticalOptions="Center" FontSize="Small" />
+                        <Entry Text="{Binding MemoryLengthInput}" FontSize="Small"
                             MaximumWidthRequest="100" Keyboard="Numeric"
                             Placeholder="30000" PlaceholderColor="#444" />
                     </HorizontalStackLayout>
                     <!-- Change initial cell index -->
                     <HorizontalStackLayout Spacing="20">
-                        <Label Text="Initial cell index:" VerticalOptions="Center" />
-                        <Entry Text="{Binding InitialIndexInput}"
+                        <Label Text="Initial cell index:" VerticalOptions="Center" FontSize="Small" />
+                        <Entry Text="{Binding InitialIndexInput}" FontSize="Small"
                             MaximumWidthRequest="100" Keyboard="Numeric"
                             Placeholder="0" PlaceholderColor="#444" />
                     </HorizontalStackLayout>
@@ -175,7 +171,7 @@
                     TextColor="#aa2222" HorizontalOptions="Center" />
             </VerticalStackLayout>
             <!-- Save changes -->
-            <Button Grid.Row="1" Grid.Column="2" Text="Save new settings"
+            <Button Grid.Row="2" Text="Save new settings" FontSize="Small"
                 Command="{Binding TrySaveNewSettingsCommand}" />
         </Grid>
     </Grid>

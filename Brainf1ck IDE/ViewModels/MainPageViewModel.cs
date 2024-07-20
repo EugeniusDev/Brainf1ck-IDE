@@ -3,7 +3,6 @@ using Brainf1ck_IDE.Common.ProjectRelated;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 
 namespace Brainf1ck_IDE.ViewModels
 {
@@ -20,11 +19,24 @@ namespace Brainf1ck_IDE.ViewModels
         private string initialIndexInput = string.Empty;
         [ObservableProperty]
         private string errorMessage = string.Empty;
+
+        private MainPage mainPage = (MainPage)AppShell.Current.CurrentPage;
         public MainPageViewModel()
         {
-            projects = StorageReader.RetrieveAllProjectsData()
+            projects = StorageReader.ReadAllProjectsData()
                 .CleanupFromUnexisting();
             SaveProjectsList();
+        }
+
+
+        private void SaveProjectsList()
+        {
+            Projects.SaveProjectsData();
+        }
+
+        public void BindToMainPage(MainPage mainPage)
+        {
+            this.mainPage = mainPage;
         }
 
         [RelayCommand]
@@ -37,19 +49,9 @@ namespace Brainf1ck_IDE.ViewModels
             }
         }
 
-        public void SaveProjectsList()
-        {
-            Projects.SaveProjectsData();
-        }
-
         [RelayCommand]
         async Task RemoveProject(ProjectMetadata project)
         {
-            if (AppShell.Current.CurrentPage is not MainPage mainPage)
-            {
-                return;
-            }
-
             bool isRemovingConfirmed = await mainPage
                 .DisplayAlert("Removing project from the list",
                 "Note that project files will not be deleted", 
@@ -69,20 +71,17 @@ namespace Brainf1ck_IDE.ViewModels
         [RelayCommand]
         async Task OpenExistingProject(ProjectMetadata project)
         {
-            if (AppShell.Current.CurrentPage is not MainPage mainPage)
-            {
-                return;
-            }
-            await mainPage.TryOpenExistingProject(
-                StorageReader.RetrieveProjectPropertiesFrom(project.Path),
+            await mainPage.TryOpenProject(
+                StorageReader.ReadProjectPropertiesFrom(project.Path),
                 project.Path);
         }
 
         [RelayCommand]
-        void TryOpenNewProject()
+        async Task TryOpenNewProject()
         {
-            ErrorMessage = ProjectToCreate.ParseInputWithFeedback(InitialIndexInput, 
+            ErrorMessage = ProjectToCreate.TryPopulateAndGiveFeedback(InitialIndexInput, 
                 MemoryLengthInput);
+            await mainPage.TryFinalizeProjectCreation(ProjectToCreate);
         }
     }
 }

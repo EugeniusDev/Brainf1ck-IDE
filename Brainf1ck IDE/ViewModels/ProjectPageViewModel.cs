@@ -41,9 +41,9 @@ namespace Brainf1ck_IDE.ViewModels
         {
             MemoryLengthInput = ProjectProps.MemoryLength.ToString();
             InitialIndexInput = ProjectProps.InitialCellIndex.ToString();
-            filesFolderPath = ProjectStructurator
+            filesFolderPath = ProjectValidator
                 .FormProjectFilesFolderPath(ProjectProps);
-            projectSettingsPath = ProjectStructurator
+            projectSettingsPath = ProjectValidator
                 .FormProjectSettingsPath(ProjectProps);
             BrainfuckFiles = RetrieveBrainfuckFilesData();
             brainfuckExecutor = new(ProjectProps);
@@ -61,7 +61,7 @@ namespace Brainf1ck_IDE.ViewModels
             foreach (var filePath in bfFilepaths)
             {
                 bfFiles.Add(StorageReader
-                    .RetrieveBrainfuckFile(filePath));
+                    .ReadBrainfuckFile(filePath));
             }
             
             return bfFiles;
@@ -77,7 +77,7 @@ namespace Brainf1ck_IDE.ViewModels
         [RelayCommand]
         async Task TrySaveNewSettings()
         {
-            ErrorMessage = ProjectProps.ParseInputWithFeedback(InitialIndexInput,
+            ErrorMessage = ProjectProps.TryPopulateAndGiveFeedback(InitialIndexInput,
                 MemoryLengthInput);
             if (string.IsNullOrEmpty(ErrorMessage))
             {
@@ -172,6 +172,7 @@ namespace Brainf1ck_IDE.ViewModels
                 BrainfuckFiles.Remove(SelectedFile);
                 string filePath = FormBrainfuckFilePath(SelectedFile);
                 Deleter.TryDeleteFile(filePath);
+                await projectPage.HideFileView();
             }
         }
 
@@ -223,7 +224,7 @@ namespace Brainf1ck_IDE.ViewModels
 
             string executionOutput = brainfuckExecutor
                 .Execute(SelectedFile.Contents);
-            if (string.IsNullOrEmpty(executionOutput))
+            if (string.IsNullOrWhiteSpace(executionOutput))
             {
                 WriteOutput("Your code outputs nothing. " +
                     "Did you forget to write \".\" at the end?",

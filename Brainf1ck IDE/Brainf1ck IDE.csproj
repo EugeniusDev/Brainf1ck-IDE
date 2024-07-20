@@ -24,7 +24,7 @@
 		<ApplicationTitle>Brainf1ck IDE</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.brainf1ckide</ApplicationId>
+		<ApplicationId>com.eugeniusdev.brainf1ckide</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -46,8 +46,8 @@
 		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
 		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+		<MauiImage Include="Resources\Images\*" Resize="True" />
+		<MauiImage Update="Resources\Images\dotnet_bot.png" BaseSize="300,185" />
 
 		<!-- Custom Fonts -->
 		<MauiFont Include="Resources\Fonts\*" />
@@ -56,6 +56,27 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Remove="Resources\Images\create_project.png" />
+	  <None Remove="Resources\Images\open_project.png" />
+	  <None Remove="Resources\Images\optimize_button.png" />
+	  <None Remove="Resources\Images\paste_snippet_button.png" />
+	  <None Remove="Resources\Images\run_button.png" />
+	  <None Remove="Resources\Images\settings_button.png" />
+	  <None Remove="Resources\Images\trash_button.png" />
+	  <None Remove="Resources\Images\visualize_button.png" />
+	</ItemGroup>
+
+	<!-- Images taken from:
+		https://www.freepik.com/icon/settings_158384
+		https://www.freepik.com/icon/accuracy_3800833
+		https://www.freepik.com/icon/pause_12967009
+		https://www.freepik.com/icon/play_14358492
+		https://www.freepik.com/icon/trash_17213075
+		https://www.freepik.com/icon/spark_10239565
+		https://www.freepik.com/icon/text_7901106
+		https://www.freepik.com/icon/add_11233005 -->
+	
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />

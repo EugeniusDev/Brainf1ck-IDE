@@ -1,6 +1,4 @@
-﻿using Brainf1ck_IDE.Common.FileProcessing;
-
-namespace Brainf1ck_IDE.Common.ProjectRelated
+﻿namespace Brainf1ck_IDE.Common.ProjectRelated
 {
     public class ProjectProperties
     {

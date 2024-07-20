@@ -9,20 +9,23 @@ namespace Brainf1ck_IDE.Common.FileProcessing
     {
         public static void SaveProjectsData(ObservableCollection<ProjectMetadata> projects)
         {
-            string jsonString = JsonSerializer.Serialize(projects);
-            File.WriteAllText(FilePaths.projectsDataList, jsonString);
+            projects.WriteTo(FilePaths.projectsDataList);
+        }
+
+        private static void WriteTo<T>(this T obj, string filePath)
+        {
+            string jsonString = JsonSerializer.Serialize(obj);
+            File.WriteAllText(filePath, jsonString);
         }
 
         public static void SaveGlobalSettings(GlobalSettings globalSettings)
         {
-            string jsonString = JsonSerializer.Serialize(globalSettings);
-            File.WriteAllText(FilePaths.globalSettingsPath, jsonString);
+            globalSettings.WriteTo(FilePaths.globalSettingsPath);
         }
 
         public static void SaveProjectPropertiesToFile(string filePath, ProjectProperties props)
         {
-            string jsonString = JsonSerializer.Serialize(props);
-            File.WriteAllText(filePath, jsonString);
+            props.WriteTo(filePath);
         }
 
         public static void SaveFile(string filePath, string contents)

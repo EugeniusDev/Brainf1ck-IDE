@@ -10,5 +10,10 @@ namespace Brainf1ck_IDE.Common.FileProcessing
             return !string.IsNullOrWhiteSpace(fileName)
                 && regex.IsMatch(fileName);
         }
+
+        public static bool IsRootFolderValid(string? path)
+        {
+            return path is not null && Directory.Exists(path);
+        }
     }
 }

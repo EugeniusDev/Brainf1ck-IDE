@@ -14,5 +14,22 @@
         {
             return $"{projectName}{ideRelatedFileExtension}";
         }
+
+        public static async Task<FileResult?> PickFilePath()
+        {
+            var chosenFile = await FilePicker.PickAsync(
+                new PickOptions
+                {
+                    PickerTitle = $"Please select file with " +
+                    $"\"{ideRelatedFileExtension}\" extension",
+                    FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                    {
+                        // TODO check if any issues appear because of ideRelatedFileExtension returns extension with dot
+                        {DevicePlatform.Android, new[] { FilePaths.ideRelatedFileExtension } },
+                        {DevicePlatform.WinUI, new[] { FilePaths.ideRelatedFileExtension } }
+                    })
+                });
+            return chosenFile;
+        }
     }
 }

@@ -1,12 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-
-namespace Brainf1ck_IDE.Common.FileProcessing
+﻿namespace Brainf1ck_IDE.Common.FileProcessing
 {
-    public partial class BrainfuckFile : ObservableObject
+    public class BrainfuckFile
     {
-        [ObservableProperty]
-        string name = string.Empty;
-        [ObservableProperty]
-        string contents = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Contents { get; set; } = string.Empty;
     }
 }

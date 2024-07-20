@@ -7,74 +7,24 @@ namespace Brainf1ck_IDE.Common.FileProcessing
 {
     public static class StorageReader
     {
-        public static ObservableCollection<ProjectMetadata> RetrieveAllProjectsData()
+        public static ObservableCollection<ProjectMetadata> ReadAllProjectsData()
         {
-            if (File.Exists(FilePaths.projectsDataList))
+            string jsonString = TryReadFileContent(FilePaths.projectsDataList);
+            try
             {
-                string jsonString = File.ReadAllText(FilePaths.projectsDataList);
-                try
-                {
-                    var result = JsonSerializer
-                        .Deserialize<ObservableCollection<ProjectMetadata>>(jsonString);
-                    return result ?? [];
-                }
-                catch
-                {
-                    // Failed to parse json, so return default
-                }
+                var result = JsonSerializer
+                    .Deserialize<ObservableCollection<ProjectMetadata>>(jsonString);
+                return result ?? [];
+            }
+            catch
+            {
+                // Failed to parse json, so return empty
             }
 
             return [];
         }
 
-        public static ProjectProperties? RetrieveProjectPropertiesFrom(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                string jsonString = File.ReadAllText(filePath);
-                try
-                {
-                    return JsonSerializer.Deserialize<ProjectProperties>(jsonString);
-                }
-                catch
-                {
-                    // Failed to parse json, so return default
-                }
-            }
-
-            return null;
-        }
-
-        public static GlobalSettings RetrieveGlobalSettings()
-        {
-            if (File.Exists(FilePaths.globalSettingsPath))
-            {
-                string jsonString = File.ReadAllText(FilePaths.globalSettingsPath);
-                try
-                {
-                    return JsonSerializer.Deserialize<GlobalSettings>(jsonString)
-                        ?? new();
-                }
-                catch
-                {
-                    // Failed to parse json, so return default
-                }
-            }
-
-            return new();
-        }
-
-        public static BrainfuckFile RetrieveBrainfuckFile(string filePath)
-        {
-            string fileName = Path.GetFileName(filePath);
-            return new BrainfuckFile
-            {
-                Name = fileName,
-                Contents = RetrieveFileContent(filePath)
-            };
-        }
-
-        public static string RetrieveFileContent(string filePath)
+        public static string TryReadFileContent(string filePath)
         {
             if (File.Exists(filePath))
             {
@@ -82,6 +32,40 @@ namespace Brainf1ck_IDE.Common.FileProcessing
             }
 
             return string.Empty;
+        }
+
+        public static ProjectProperties? ReadProjectPropertiesFrom(string filePath)
+        {
+            string jsonString = TryReadFileContent(filePath);
+            return jsonString.TryDeserializeInObject<ProjectProperties>();
+        }
+
+        private static T? TryDeserializeInObject<T>(this string jsonString) where T : class
+        {
+            try
+            {
+                return JsonSerializer.Deserialize<T>(jsonString);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static GlobalSettings ReadGlobalSettings()
+        {
+            string jsonString = TryReadFileContent(FilePaths.globalSettingsPath);
+            return jsonString.TryDeserializeInObject<GlobalSettings>()
+                ?? new();
+        }
+
+        public static BrainfuckFile ReadBrainfuckFile(string filePath)
+        {
+            return new BrainfuckFile
+            {
+                Name = Path.GetFileName(filePath),
+                Contents = TryReadFileContent(filePath)
+            };
         }
     }
 }

@@ -10,13 +10,27 @@ namespace Brainf1ck_IDE
     {
         private GlobalSettings globalSettings = SettingsManager.RetrieveGlobalSettings();
         private bool shouldCreateWelcomeFileInNewProject = true;
+        private readonly MainPageViewModel viewModel;
         public MainPage(MainPageViewModel mainVm)
         {
             InitializeComponent();
-            BindingContext = mainVm;
+            viewModel = mainVm;
+            BindingContext = viewModel;
+            viewModel.BindToMainPage(this);
         }
 
-        private async void CreateProjectBtn_Tapped(object sender, TappedEventArgs e)
+        private async void CreateProjectViewBtn_Tapped(object sender, TappedEventArgs e)
+        {
+            await DisplayCreateNewProjectView();
+
+            ProjectNameEntry.Focus();
+            if (globalSettings.RootFolderForNewProjects is not null)
+            {
+                RootFolderLabel.Text = globalSettings.RootFolderForNewProjects;
+            }
+        }
+
+        private async Task DisplayCreateNewProjectView()
         {
             Title = "Create new Brainfuck project";
             await MainMenuGrid.ScaleTo(.6, 100);
@@ -26,35 +40,18 @@ namespace Brainf1ck_IDE
             NewProjectGrid.IsEnabled = true;
             NewProjectGrid.IsVisible = true;
             await NewProjectGrid.ScaleTo(1d, 100);
-
-            ProjectNameEntry.Focus();
-            if (globalSettings.RootFolderForNewProjects is not null)
-            {
-                RootFolderLabel.Text = globalSettings.RootFolderForNewProjects;
-            }
         }
 
         private async void OpenProjectBtn_Tapped(object sender, TappedEventArgs e)
         {
-            var chosenFile = await FilePicker.PickAsync(
-                new PickOptions{
-                    PickerTitle = $"Please select file with " +
-                    $"\"{FilePaths.ideRelatedFileExtension}\" extension",
-                    FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-                    {
-                        // TODO check if any issues appear because of ideRelatedFileExtension returns extension with dot
-                        {DevicePlatform.Android, new[] { $"{FilePaths.ideRelatedFileExtension}" } },
-                        {DevicePlatform.WinUI, new[] { $"{FilePaths.ideRelatedFileExtension}" } }
-                    })
-                });
+            FileResult? chosenFile = await FilePaths.PickFilePath();
             if (chosenFile is null)
             {
-                await DisplayAlert("Selection error", 
-                    "Project file was not selected", "Ok");
                 return;
             }
 
-            ProjectProperties? projectToOpen = StorageReader.RetrieveProjectPropertiesFrom(chosenFile.FullPath);
+            ProjectProperties? projectToOpen = StorageReader
+                .ReadProjectPropertiesFrom(chosenFile.FullPath);
             if (projectToOpen is null)
             {
                 await DisplayAlert("Selection error",
@@ -67,15 +64,12 @@ namespace Brainf1ck_IDE
                 Name = projectToOpen.Name,
                 Path = chosenFile.FullPath
             };
-            if (BindingContext is MainPageViewModel viewModel)
-            {
-                viewModel.AppendNewProjectToExisting(newExistingProject);
-            }
+            viewModel.AppendNewProjectToExisting(newExistingProject);
 
-            await TryOpenExistingProject(projectToOpen, newExistingProject.Path);
+            await TryOpenProject(projectToOpen, newExistingProject.Path);
         }
 
-        public async Task TryOpenExistingProject(ProjectProperties? project, string projectPropsFilePath)
+        public async Task TryOpenProject(ProjectProperties? project, string projectPropsFilePath)
         {
             if (project is null)
             {
@@ -85,26 +79,9 @@ namespace Brainf1ck_IDE
 
             SettingsManager
                 .SetNewDefaultProjectFolderFromSettingsFile(projectPropsFilePath);
-            if (!ProjectStructurator.HasValidStructure(project))
-            {
-                await DisplayAlert("Corrupt project structure",
-                    "Looks like project\'s structure have changed. Trying to restore it",
-                    "Ok");
-                ProjectStructurator.RestoreValidStructure(project);
-            }
+            ProjectValidator.EnsureCorrectStructure(project);
 
-            await NavigateToProjectPageFor(project);
-        }
-
-        private async Task NavigateToProjectPageFor(ProjectProperties project)
-        {
-            await Shell.Current.GoToAsync(
-                $"{nameof(ProjectPage)}?{nameof(ProjectProperties)}={project}",
-                true,
-                new Dictionary<string, object>
-                {
-                    {nameof(ProjectProperties), project}
-                });
+            await project.OpenInProjectPage();
         }
 
         private async void RootFolderChoosingBtn_Clicked(object sender, EventArgs e)
@@ -135,40 +112,34 @@ namespace Brainf1ck_IDE
             await MainMenuGrid.ScaleTo(1d, 100);
         }
 
-        private async void ConfirmNewProjectBtn_Clicked(object sender, EventArgs e)
+        public async Task TryFinalizeProjectCreation(ProjectProperties project)
         {
-            if (!IsRootFolderValid(globalSettings.RootFolderForNewProjects))
+            if (!FileValidator.IsRootFolderValid(globalSettings
+                .RootFolderForNewProjects))
             {
                 ErrorLabel.Text = "Invalid directory chosen. " +
                     "Please, choose existing directory";
                 return;
             }
+
             if (string.IsNullOrEmpty(ErrorLabel.Text))
             {
-                MainPageViewModel mainVm = (MainPageViewModel)BindingContext;
-                ProjectProperties newProject = mainVm.ProjectToCreate;
-
                 ProjectMetadata newProjMetadata = new()
                 {
-                    Name = newProject.Name,
-                    Path = ProjectStructurator
-                        .FormProjectSettingsPath(newProject)
+                    Name = project.Name,
+                    Path = ProjectValidator
+                        .FormProjectSettingsPath(project)
                 };
-                mainVm.AppendNewProjectToExistingCommand.Execute(newProjMetadata);
+                viewModel.AppendNewProjectToExistingCommand.Execute(newProjMetadata);
 
-                ProjectStructurator.CreateNewProjectStructure(newProject);
+                ProjectValidator.EnsureCorrectStructure(project);
                 if (shouldCreateWelcomeFileInNewProject)
                 {
-                    ProjectStructurator.CreateWelcomeFileFor(newProject);
+                    ProjectValidator.CreateWelcomeFileFor(project);
                 }
                 await DisplayMainMenuView();
-                await NavigateToProjectPageFor(newProject);
+                await project.OpenInProjectPage();
             }
-        }
-
-        private static bool IsRootFolderValid(string? path)
-        {
-            return path is not null && Directory.Exists(path);
         }
 
         private void CreateWelcomeFileCheckbox_CheckedChanged(object sender, CheckedChangedEventArgs e)

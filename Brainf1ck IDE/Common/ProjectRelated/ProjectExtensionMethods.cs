@@ -35,41 +35,15 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
             StorageWriter.SaveProjectPropertiesToFile(filePath, props);
         }
 
-        public static string ParseInputWithFeedback(this ProjectProperties project,
-            string indexString, string memoryLengthString)
+        public static async Task OpenInProjectPage(this ProjectProperties project)
         {
-            if (string.IsNullOrWhiteSpace(indexString)
-                || string.IsNullOrWhiteSpace(memoryLengthString))
-            {
-                return "Lack of input. " +
-                    "Please fill all required fields";
-            }
-
-            if (uint.TryParse(indexString, out uint index)
-                && uint.TryParse(memoryLengthString, out uint memoryLength))
-            {
-                project.InitialCellIndex = index;
-                project.MemoryLength = memoryLength;
-            }
-            else
-            {
-                return "Wrong input. " +
-                    "Memory length and initial index must be positive integer numbers";
-            }
-
-            if (!FileValidator.IsStringValidForFilesystem(project.Name))
-            {
-                return "Invalid project name. " +
-                    "Please, use only English literals, digits and underscores";
-            }
-            if (!project.AreNumeralPropertiesValid())
-            {
-                return "Invalid project settings. " +
-                    "Memory length should be at least 30000. " +
-                    "In this case index can vary from 0 to 29999";
-            }
-
-            return string.Empty;
+            await Shell.Current.GoToAsync(
+                $"{nameof(ProjectPage)}?{nameof(ProjectProperties)}={project}",
+                true,
+                new Dictionary<string, object>
+                {
+                    {nameof(ProjectProperties), project}
+                });
         }
     }
 }

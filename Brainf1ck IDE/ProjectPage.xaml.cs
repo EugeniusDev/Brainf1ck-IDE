@@ -58,7 +58,7 @@ public partial class ProjectPage : ContentPage
         CodeGrid.IsVisible = false;
     }
 
-    private async void DeleteFile_Tapped(object sender, TappedEventArgs e)
+    public async Task HideFileView()
     {
         await HideCodeView();
         await ToggleNoActiveViewLabel(true);
