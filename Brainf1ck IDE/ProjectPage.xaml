@@ -47,15 +47,15 @@
                 </ScrollView>
             </Frame>
             <!-- Settings button -->
-            <Frame Grid.Row="3" Padding="0" Margin="4">
+            <Frame Grid.Row="3" Padding="0" Margin="4" >
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding OpenSettingsViewCommand}" 
                                           Tapped="SettingsFrame_Tapped" />
                 </Frame.GestureRecognizers>
-                <HorizontalStackLayout Spacing="12"
+                <HorizontalStackLayout Spacing="10"
                     HorizontalOptions="Center" VerticalOptions="Center">
-                    <Image Source="Resources/Images/settings_button.png" Margin="10" MaximumWidthRequest="50"/>
-                    <Label Text="Settings" FontSize="Small" />
+                    <Image Source="settings_button.png" Margin="10" />
+                    <Label Text="Settings" FontSize="Small" VerticalOptions="Center"/>
                 </HorizontalStackLayout>
             </Frame>
         </Grid>
@@ -78,8 +78,8 @@
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/paste_snippet_button.png" Margin="16" MaximumWidthRequest="50"/>
-                        <Label Margin="16" Text="Paste snippet" FontSize="Micro" />
+                        <Image Source="paste_snippet_button.png" Margin="16" />
+                        <Label Margin="16" Text="Paste snippet" FontSize="Micro" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Frame>
                 <!-- Visualize button -->
@@ -90,8 +90,8 @@
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/visualize_button.png" Margin="16" MaximumWidthRequest="50"/>
-                        <Label Margin="16" Text="Visualize" FontSize="Micro" />
+                        <Image Source="visualize_button.png" Margin="16" />
+                        <Label Margin="16" Text="Visualize" FontSize="Micro" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Frame>
                 <!-- Run button -->
@@ -102,8 +102,8 @@
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/run_button.png" Margin="16" MaximumWidthRequest="50"/>
-                        <Label Margin="16" Text="Run" FontSize="Micro" />
+                        <Image Source="run_button.png" Margin="16" />
+                        <Label Margin="16" Text="Run" FontSize="Micro" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Frame>
                 <!-- Optimize button -->
@@ -114,9 +114,9 @@
                     </Frame.GestureRecognizers>
                     <HorizontalStackLayout Spacing="12"
                         HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="Resources/Images/optimize_button.png" WidthRequest="50" HeightRequest="50"
+                        <Image Source="optimize_button.png" 
                                Aspect="AspectFill" />
-                        <Label Margin="16" Text="Optimize" FontSize="Micro" />
+                        <Label Margin="16" Text="Optimize" FontSize="Micro" VerticalOptions="Center" />
                     </HorizontalStackLayout>
                 </Frame>
             </FlexLayout>

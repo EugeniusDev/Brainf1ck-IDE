@@ -41,7 +41,7 @@
                                                         AncestorType={x:Type viewmodel:MainPageViewModel}},
                                                         Path=RemoveProjectCommand}"
                                                      CommandParameter="{Binding .}"
-                                                     Source="Resources/Images/trash_button.png" 
+                                                     Source="remove_button.png"  Background="Transparent"
                                                      Aspect="AspectFit"/>
                                     </Grid>
                                 </Frame>
@@ -63,7 +63,7 @@
                     <Grid HorizontalOptions="Fill" VerticalOptions="Fill"
                                           ColumnDefinitions="2*,5*">
                         <Image Margin="20" Aspect="AspectFit"
-                               Source="Resources/Images/create_project.png"/>
+                               Source="create_project_button.png"/>
                         <VerticalStackLayout Grid.Column="1" Padding="20" Spacing="10">
                             <Label Text="Create new project" FontSize="Small" />
                             <Label Text="Change or leave default settings and get started" FontSize="Micro" />
@@ -78,7 +78,7 @@
                     <Grid HorizontalOptions="Fill" VerticalOptions="Fill"
                                           ColumnDefinitions="2*,5*">
                         <Image Margin="20" Aspect="AspectFit"
-                               Source="Resources/Images/open_project.png"/>
+                               Source="open_project_button.png"/>
                         <VerticalStackLayout Grid.Column="1" Padding="20" Spacing="10">
                             <Label Text="Open existing project" FontSize="Small" />
                             <Label Text="Locate a .bfide file to open existing Brainfuck IDE project" FontSize="Micro" />

@@ -57,24 +57,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Images\create_project_button.png" />
+	  <None Remove="Resources\Images\create_project.png" />
+	  <None Remove="Resources\Images\open_project.png" />
 	  <None Remove="Resources\Images\optimize_button.png" />
 	  <None Remove="Resources\Images\paste_snippet_button.png" />
-	  <None Remove="Resources\Images\remove_button.png" />
 	  <None Remove="Resources\Images\run_button.png" />
 	  <None Remove="Resources\Images\settings_button.png" />
+	  <None Remove="Resources\Images\trash_button.png" />
 	  <None Remove="Resources\Images\visualize_button.png" />
 	</ItemGroup>
 
 	<!-- Images taken from:
-		https://www.freepik.com/icon/add_11233005
-		https://www.freepik.com/icon/folder_3857008
-		https://www.freepik.com/icon/square-x_10457015
 		https://www.freepik.com/icon/settings_158384
 		https://www.freepik.com/icon/accuracy_3800833
 		https://www.freepik.com/icon/pause_12967009
 		https://www.freepik.com/icon/play_14358492
-		https://www.freepik.com/icon/spark_10239565 -->
+		https://www.freepik.com/icon/square-x_10457015
+		https://www.freepik.com/icon/spark_10239565
+		https://www.freepik.com/icon/text_7901106
+		https://www.freepik.com/icon/add_11233005 -->
 	
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
