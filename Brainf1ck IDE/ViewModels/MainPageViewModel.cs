@@ -28,7 +28,6 @@ namespace Brainf1ck_IDE.ViewModels
             SaveProjectsList();
         }
 
-
         private void SaveProjectsList()
         {
             Projects.SaveProjectsData();

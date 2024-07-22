@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Brainf1ck_IDE.DblTextImageGrid"
+             x:Name="this">
+    <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="2*,5*"          
+           BindingContext="{x:Reference this}">
+        <Image Margin="20" Source="{Binding ImageSrc}"/>
+        <VerticalStackLayout Grid.Column="1" Padding="20" Spacing="10">
+            <Label FontSize="Small"
+                Text="{Binding PrimaryText}" />
+            <Label FontSize="Micro"
+                Text="{Binding SecondaryText}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentView>

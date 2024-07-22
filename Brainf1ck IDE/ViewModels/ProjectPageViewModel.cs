@@ -68,10 +68,14 @@ namespace Brainf1ck_IDE.ViewModels
         }
 
         [RelayCommand]
-        void OpenSettingsView()
+        async Task OpenSettingsView()
         {
             SaveSelectedFile();
             SelectedFile = new();
+            if (AppShell.Current.CurrentPage is ProjectPage projectPage)
+            {
+                await projectPage.OpenSettingsView();
+            }
         }
 
         [RelayCommand]

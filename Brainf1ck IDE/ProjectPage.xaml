@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Brainf1ck_IDE.ProjectPage"
              xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
+             xmlns:local="clr-namespace:Brainf1ck_IDE"
              xmlns:fileProcessing="clr-namespace:Brainf1ck_IDE.Common.FileProcessing"
              x:DataType="viewmodel:ProjectPageViewModel"
              BackgroundColor="{StaticResource PrimaryDark}">
@@ -47,17 +48,10 @@
                 </ScrollView>
             </Frame>
             <!-- Settings button -->
-            <Frame Grid.Row="3" Padding="0" Margin="4" >
-                <Frame.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding OpenSettingsViewCommand}" 
-                                          Tapped="SettingsFrame_Tapped" />
-                </Frame.GestureRecognizers>
-                <HorizontalStackLayout Spacing="10"
-                    HorizontalOptions="Center" VerticalOptions="Center">
-                    <Image Source="settings_button.png" Margin="10" />
-                    <Label Text="Settings" FontSize="Small" VerticalOptions="Center"/>
-                </HorizontalStackLayout>
-            </Frame>
+            <local:TextImageFrame Grid.Row="3" x:Name="SettingsFrame" Margin="4"
+                    CommandToCall="{Binding OpenSettingsViewCommand}"
+                    ImageSrc="settings_button.png"
+                    PrimaryText="Settings" />
         </Grid>
         <Label Grid.Column="1" x:Name="NoActiveViewLabel"
             FontSize="Large" FontAttributes="Bold" LineBreakMode="WordWrap"
@@ -67,61 +61,28 @@
         <Grid Grid.Column="1" x:Name="CodeGrid"
               VerticalOptions="Fill" RowDefinitions="2*,10*,3*" Margin="4"
               Scale=".6" IsEnabled="False" IsVisible="Collapse">
+            <!-- Buttons -->
             <FlexLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                 Margin="0,4" JustifyContent="SpaceEvenly" Padding="2">
-                <!-- TODO Make template for this frame and reuse it -->
-                <!-- Paste snippet button -->
-                <Frame Padding="0" Margin="0" MinimumWidthRequest="140"
-                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NotImplementedCommand}" />
-                    </Frame.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="12"
-                        HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="paste_snippet_button.png" Margin="16" />
-                        <Label Margin="16" Text="Paste snippet" FontSize="Micro" VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
-                <!-- Visualize button -->
-                <Frame Padding="0" Margin="0" MinimumWidthRequest="220"
-                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NotImplementedCommand}" />
-                    </Frame.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="12"
-                        HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="visualize_button.png" Margin="16" />
-                        <Label Margin="16" Text="Visualize" FontSize="Micro" VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
-                <!-- Run button -->
-                <Frame Padding="0" Margin="0" MinimumWidthRequest="70"
-                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ExecuteCodeCommand}" />
-                    </Frame.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="12"
-                        HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="run_button.png" Margin="16" />
-                        <Label Margin="16" Text="Run" FontSize="Micro" VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
-                <!-- Optimize button -->
-                <Frame Padding="0" Margin="0"
-                    HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                    <Frame.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NotImplementedCommand}" />
-                    </Frame.GestureRecognizers>
-                    <HorizontalStackLayout Spacing="12"
-                        HorizontalOptions="Center" VerticalOptions="Center">
-                        <Image Source="optimize_button.png" 
-                               Aspect="AspectFill" />
-                        <Label Margin="16" Text="Optimize" FontSize="Micro" VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                </Frame>
+                <local:TextImageFrame 
+                    CommandToCall="{Binding NotImplementedCommand}"
+                    ImageSrc="paste_snippet_button.png"
+                    PrimaryText="Paste snippet"/>
+                <local:TextImageFrame 
+                    CommandToCall="{Binding NotImplementedCommand}"
+                    ImageSrc="visualize_button.png"
+                    PrimaryText="Visualize"/>
+                <local:TextImageFrame 
+                    CommandToCall="{Binding ExecuteCodeCommand}"
+                    ImageSrc="run_button.png"
+                    PrimaryText="Run"/>
+                <local:TextImageFrame 
+                    CommandToCall="{Binding NotImplementedCommand}"
+                    ImageSrc="optimize_button.png"
+                    PrimaryText="Optimize"/>
             </FlexLayout>
             <!-- Code editor -->
-            <Frame Grid.Row="1" Padding="0" Margin="4" VerticalOptions="Fill">
+            <Frame Grid.Row="1" Margin="4" VerticalOptions="Fill">
                 <ScrollView Padding="0" HorizontalOptions="Fill" VerticalScrollBarVisibility="Always">
                     <Editor Margin="0" VerticalTextAlignment="Start" BackgroundColor="{StaticResource CodeEditor}"
                            VerticalOptions="Fill"
@@ -131,7 +92,7 @@
                 </ScrollView>
             </Frame>
             <!-- Code output-->
-            <Frame Grid.Row="2" Padding="0" Margin="4">
+            <Frame Grid.Row="2" Margin="4">
                 <Grid RowDefinitions="2*,6*" BackgroundColor="#222233">
                     <Label Text="Output" FontSize="Caption" FontFamily="monospace"
                            VerticalOptions="Center" Margin="20,0,0,0"/>

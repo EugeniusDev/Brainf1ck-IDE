@@ -6,10 +6,11 @@ namespace Brainf1ck_IDE;
 public partial class ProjectPage : ContentPage
 {
 	public ProjectPage(ProjectPageViewModel vm)
-	{
-		InitializeComponent();
-		BindingContext = vm;
-	}
+    {
+        InitializeComponent();
+        BindingContext = vm;
+    }
+
     protected override void OnAppearing()
     {
         if (BindingContext is ProjectPageViewModel vm)
@@ -20,7 +21,7 @@ public partial class ProjectPage : ContentPage
         base.OnAppearing();
     }
 
-    private async void SettingsFrame_Tapped(object sender, TappedEventArgs e)
+    public async Task OpenSettingsView()
     {
         await ToggleNoActiveViewLabel(false);
         await DisplaySettingsView();

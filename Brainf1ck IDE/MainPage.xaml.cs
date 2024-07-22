@@ -19,7 +19,7 @@ namespace Brainf1ck_IDE
             viewModel.BindToMainPage(this);
         }
 
-        private async void CreateProjectViewBtn_Tapped(object sender, TappedEventArgs e)
+        private async void CreateProjectViewBtn_Tapped(object sender, EventArgs e)
         {
             await DisplayCreateNewProjectView();
 
