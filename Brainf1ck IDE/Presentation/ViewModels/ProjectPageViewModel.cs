@@ -165,6 +165,10 @@ namespace Brainf1ck_IDE.ViewModels
         [RelayCommand]
         async Task DeleteCurrentFile()
         {
+            if (SelectedFile is null || string.IsNullOrEmpty(SelectedFile.Name))
+            {
+                return;
+            }
             if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
             {
                 return;

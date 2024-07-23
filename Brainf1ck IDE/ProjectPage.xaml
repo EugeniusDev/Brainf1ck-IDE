@@ -9,7 +9,7 @@
              BackgroundColor="{StaticResource PrimaryDark}">    
     <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="2*,8*">
         <!-- Left panel with list of files etc. -->
-        <Grid RowDefinitions="1*,2*,10*,2*" ColumnDefinitions="*" VerticalOptions="Fill" Margin="4">
+        <Grid RowDefinitions="2*,4*,10*,4*" ColumnDefinitions="*" VerticalOptions="Fill" Margin="4">
             <!-- Project name -->
             <Label Text="{Binding ProjectProps.Name}" FontSize="Medium"
                 VerticalOptions="Center" HorizontalOptions="Center" />
@@ -17,9 +17,9 @@
             <FlexLayout Grid.Row="1" MinimumHeightRequest="50"
                            HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                            Margin="0,4" JustifyContent="SpaceEvenly">
-                <Button Text="Add file" FontSize="Caption" MinimumWidthRequest="90"
+                <Button Text="Add file" FontSize="Caption" MinimumWidthRequest="80"
                         Command="{Binding AddNewFileCommand}" />
-                <Button Text="Delete file" FontSize="Caption" MinimumWidthRequest="90"
+                <Button Text="Delete file" FontSize="Caption" MinimumWidthRequest="80"
                         Command="{Binding DeleteCurrentFileCommand}" />
             </FlexLayout>
             <!-- List of files -->
@@ -58,7 +58,7 @@
             Text="Add or select a file or open project settings to get started" />
         <!-- Code view -->
         <Grid Grid.Column="1" x:Name="CodeGrid"
-              VerticalOptions="Fill" RowDefinitions="2*,10*,3*" Margin="4"
+              VerticalOptions="Fill" RowDefinitions="4*,10*,5*" Margin="4"
               Scale=".6" IsEnabled="False" IsVisible="Collapse">
             <!-- Buttons -->
             <FlexLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
@@ -79,7 +79,7 @@
                     CommandToCall="{Binding NotImplementedCommand}"
                     ImageSrc="optimize_button.png"
                     PrimaryText="Optimize"/>
-                <local:TextImageFrame 
+                <local:TextImageFrame
                     CommandToCall="{Binding ShowHelpCommand}"
                     ImageSrc="help_button.png"
                     PrimaryText="Help"/>
@@ -109,12 +109,11 @@
             </Frame>
         </Grid>
         <!-- Settings view -->
-        <Grid Grid.Column="1" x:Name="SettingsGrid" Margin="4"
-            Padding="30" Scale=".6" IsEnabled="False" IsVisible="Collapse"
-            RowDefinitions="2*,5*,1*" HorizontalOptions="Fill" VerticalOptions='Fill'>
-                <Label Text="{Binding ProjectProps.Name}" FontSize="Large" 
-                       VerticalOptions="Center" HorizontalOptions="Center" />
-            <VerticalStackLayout Grid.Row="1" Spacing="10" HorizontalOptions="Center"
+        <VerticalStackLayout Grid.Column="1" x:Name="SettingsView" Margin="4" Spacing="30"
+            Padding="30" Scale=".6" IsEnabled="False" IsVisible="Collapse" HorizontalOptions="Fill" VerticalOptions='Fill'>
+            <Label Text="{Binding ProjectProps.Name}" FontSize="Large" 
+                    VerticalOptions="Center" HorizontalOptions="Center" />
+            <VerticalStackLayout Grid.Row="1" Spacing="30" HorizontalOptions="Center"
                                  VerticalOptions="Center">
                 <HorizontalStackLayout Spacing="70">
                     <!-- Change memory length -->
@@ -138,6 +137,6 @@
             <!-- Save changes -->
             <Button Grid.Row="2" Text="Save new settings" FontSize="Small"
                 Command="{Binding TrySaveNewSettingsCommand}" />
-        </Grid>
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>

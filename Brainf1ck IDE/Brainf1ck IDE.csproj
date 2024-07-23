@@ -40,10 +40,10 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.png" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\brain_splash.png" Color="#132131" BaseSize="256,256" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" Resize="True" />
@@ -57,6 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\AppIcon\appicon.png" />
 	  <None Remove="Resources\Images\create_project_button.png" />
 	  <None Remove="Resources\Images\help_button.png" />
 	  <None Remove="Resources\Images\optimize_button.png" />
@@ -65,6 +66,7 @@
 	  <None Remove="Resources\Images\run_button.png" />
 	  <None Remove="Resources\Images\settings_button.png" />
 	  <None Remove="Resources\Images\visualize_button.png" />
+	  <None Remove="Resources\Splash\brain_splash.png" />
 	</ItemGroup>
 
 	<!-- Images taken from:

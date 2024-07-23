@@ -4,9 +4,9 @@
              x:Class="Brainf1ck_IDE.DblTextImageGrid"
              x:Name="this">
     <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="2*,5*"          
-           BindingContext="{x:Reference this}">
-        <Image Margin="20" Source="{Binding ImageSrc}"/>
-        <VerticalStackLayout Grid.Column="1" Padding="20" Spacing="10">
+           BindingContext="{x:Reference this}" >
+        <Image Margin="10" Source="{Binding ImageSrc}"/>
+        <VerticalStackLayout Grid.Column="1" Padding="20" Spacing="6">
             <Label FontSize="Small"
                 Text="{Binding PrimaryText}" />
             <Label FontSize="Micro"

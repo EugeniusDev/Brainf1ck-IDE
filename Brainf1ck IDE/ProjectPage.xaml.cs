@@ -49,9 +49,9 @@ public partial class ProjectPage : ContentPage
     {
         await HideCodeView();
 
-        SettingsGrid.IsEnabled = true;
-        SettingsGrid.IsVisible = true;
-        await SettingsGrid.ScaleTo(1d, 100);
+        SettingsView.IsEnabled = true;
+        SettingsView.IsVisible = true;
+        await SettingsView.ScaleTo(1d, 100);
     }
 
     private async Task HideCodeView()
@@ -75,9 +75,9 @@ public partial class ProjectPage : ContentPage
 
     private async Task DisplayCodeView()
     {
-        await SettingsGrid.ScaleTo(.6, 100);
-        SettingsGrid.IsEnabled = false;
-        SettingsGrid.IsVisible = false;
+        await SettingsView.ScaleTo(.6, 100);
+        SettingsView.IsEnabled = false;
+        SettingsView.IsVisible = false;
 
         CodeGrid.IsEnabled = true;
         CodeGrid.IsVisible = true;

@@ -5,7 +5,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Brainf1ck_IDE"
     Shell.FlyoutBehavior="Disabled"
-    HeightRequest="600" WidthRequest="1000"
     BackgroundColor="{StaticResource PrimaryDark}">
 
     <ShellContent
