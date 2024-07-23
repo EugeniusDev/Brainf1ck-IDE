@@ -6,8 +6,7 @@
              xmlns:local="clr-namespace:Brainf1ck_IDE"
              xmlns:fileProcessing="clr-namespace:Brainf1ck_IDE.Common.FileProcessing"
              x:DataType="viewmodel:ProjectPageViewModel"
-             BackgroundColor="{StaticResource PrimaryDark}">
-    
+             BackgroundColor="{StaticResource PrimaryDark}">    
     <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="2*,8*">
         <!-- Left panel with list of files etc. -->
         <Grid RowDefinitions="1*,2*,10*,2*" ColumnDefinitions="*" VerticalOptions="Fill" Margin="4">
@@ -48,7 +47,7 @@
                 </ScrollView>
             </Frame>
             <!-- Settings button -->
-            <local:TextImageFrame Grid.Row="3" x:Name="SettingsFrame" Margin="4"
+            <local:TextImageFrame Grid.Row="3" Margin="4"
                     CommandToCall="{Binding OpenSettingsViewCommand}"
                     ImageSrc="settings_button.png"
                     PrimaryText="Settings" />
@@ -65,7 +64,7 @@
             <FlexLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
                 Margin="0,4" JustifyContent="SpaceEvenly" Padding="2">
                 <local:TextImageFrame 
-                    CommandToCall="{Binding NotImplementedCommand}"
+                    CommandToCall="{Binding PasteCodeSnippetCommand}"
                     ImageSrc="paste_snippet_button.png"
                     PrimaryText="Paste snippet"/>
                 <local:TextImageFrame 
@@ -80,12 +79,17 @@
                     CommandToCall="{Binding NotImplementedCommand}"
                     ImageSrc="optimize_button.png"
                     PrimaryText="Optimize"/>
+                <local:TextImageFrame 
+                    CommandToCall="{Binding ShowHelpCommand}"
+                    ImageSrc="help_button.png"
+                    PrimaryText="Help"/>
             </FlexLayout>
             <!-- Code editor -->
             <Frame Grid.Row="1" Margin="4" VerticalOptions="Fill">
                 <ScrollView Padding="0" HorizontalOptions="Fill" VerticalScrollBarVisibility="Always">
-                    <Editor Margin="0" VerticalTextAlignment="Start" BackgroundColor="{StaticResource CodeEditor}"
-                           VerticalOptions="Fill"
+                    <Editor x:Name="TextEditor" AutoSize="Disabled"
+                           Margin="0" BackgroundColor="{StaticResource CodeEditor}"
+                           VerticalOptions="Fill" VerticalTextAlignment="Start"
                            IsSpellCheckEnabled="False" IsTextPredictionEnabled="False"
                            Text="{Binding SelectedFile.Contents}"
                            FontSize="Micro" FontFamily="monospace"/>

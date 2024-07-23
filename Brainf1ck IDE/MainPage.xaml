@@ -6,8 +6,7 @@
              xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
              xmlns:projectRelated="clr-namespace:Brainf1ck_IDE.Common.ProjectRelated"
              x:DataType="viewmodel:MainPageViewModel"
-             BackgroundColor="{StaticResource PrimaryDark}">
-    
+             BackgroundColor="{StaticResource PrimaryDark}">    
     <VerticalStackLayout Padding="0">
         <!-- Grid that serves as main menu -->
         <Grid x:Name="MainMenuGrid" ColumnDefinitions="4*,3*" Padding="10">

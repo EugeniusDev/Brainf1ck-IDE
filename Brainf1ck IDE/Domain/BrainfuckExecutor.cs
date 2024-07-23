@@ -29,7 +29,7 @@ namespace Brainf1ck_IDE.Domain
                         cellIndex--;
                         break;
                     case ',':
-                        memory[cellIndex] = (byte)bfInput[i];
+                        memory[cellIndex] = (byte)bfInput[i-1];
                         break;
                     case '.':
                         stringBuilder.Append((char)memory[cellIndex]);

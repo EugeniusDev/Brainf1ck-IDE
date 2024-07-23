@@ -78,7 +78,8 @@ namespace Brainf1ck_IDE.Common.ProjectRelated
         {
             string mainFilePath = Path.Combine(FormProjectFilesFolderPath(project),
                 FilePaths.welcomeScriptFileName);
-            string helloWorldCode = BrainfuckSnippets.helloWorldSnippet;
+            string helloWorldCode = BrainfuckSnippets
+                .GetMarkedSnippetByKey(CodeSnippets.HelloWorld);
             StorageWriter.SaveFile(mainFilePath, helloWorldCode);
         }
 

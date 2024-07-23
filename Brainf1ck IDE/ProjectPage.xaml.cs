@@ -1,4 +1,6 @@
+using Brainf1ck_IDE.Common;
 using Brainf1ck_IDE.Common.FileProcessing;
+using Brainf1ck_IDE.Domain;
 using Brainf1ck_IDE.ViewModels;
 
 namespace Brainf1ck_IDE;
@@ -100,6 +102,24 @@ public partial class ProjectPage : ContentPage
         }
 
         return string.Concat(input, ".bf");
+    }
+
+    public async Task<string?> PromptForSnippet()
+    {
+        return await DisplayActionSheet("Choose snippet to paste",
+            "Cancel",
+            "Hello World");
+    }
+
+    public void PasteSnippet(CodeSnippets type)
+    {
+        string currentText = TextEditor.Text;
+        int cursorPosition = TextEditor.CursorPosition;
+
+        string newText = string.Concat(currentText[..cursorPosition],
+            BrainfuckSnippets.GetMarkedSnippetByKey(type),
+            currentText[cursorPosition..]);
+        TextEditor.Text = newText;
     }
 
     protected override void OnDisappearing()

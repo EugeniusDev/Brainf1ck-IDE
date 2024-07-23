@@ -58,6 +58,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\create_project_button.png" />
+	  <None Remove="Resources\Images\help_button.png" />
 	  <None Remove="Resources\Images\optimize_button.png" />
 	  <None Remove="Resources\Images\paste_snippet_button.png" />
 	  <None Remove="Resources\Images\remove_button.png" />
@@ -74,7 +75,8 @@
 		https://www.freepik.com/icon/accuracy_3800833
 		https://www.freepik.com/icon/pause_12967009
 		https://www.freepik.com/icon/play_14358492
-		https://www.freepik.com/icon/spark_10239565 -->
+		https://www.freepik.com/icon/spark_10239565
+		https://www.freepik.com/icon/question_6068072 -->
 	
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
@@ -95,13 +97,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="DblTextImageGrid.xaml">
+	  <MauiXaml Update="Presentation\CustomViews\DblTextImageGrid.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="ProjectPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="TextImageFrame.xaml">
+	  <MauiXaml Update="Presentation\CustomViews\TextImageFrame.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

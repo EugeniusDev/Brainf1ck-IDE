@@ -10,8 +10,11 @@
 
     public enum BrainfuckErrorTypes : ushort
     {
+        NoError,
         IndexOutOfMemoryRange,
-        // TODO
+        NotBalancedSquareBrackets,
+        NoParsableSymbolsFound,
+        NoInput
     }
 
     public enum BrainfuckOutputTypes : ushort
@@ -19,5 +22,12 @@
         Output,
         Warning,
         Error
+    }
+
+    public enum CodeSnippets : ushort
+    {
+        HelloWorld,
+        // TODO add more snippets
+        Cancel
     }
 }

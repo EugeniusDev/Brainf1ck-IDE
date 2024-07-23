@@ -181,9 +181,19 @@ namespace Brainf1ck_IDE.ViewModels
         }
 
         [RelayCommand]
-        void PasteCodeSnippet()
+        async Task PasteCodeSnippet()
         {
+            if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
+            {
+                return;
+            }
 
+            string? userAnswer = await projectPage.PromptForSnippet();
+            CodeSnippets snippetType = BrainfuckSnippets.GetKeyByString(userAnswer);
+            if (snippetType != CodeSnippets.Cancel)
+            {
+                projectPage.PasteSnippet(snippetType);
+            }
         }
 
         [RelayCommand]
@@ -192,7 +202,7 @@ namespace Brainf1ck_IDE.ViewModels
             if (brainfuckErrorParser
                     .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
             {
-                WriteOutput("TODO Find error and display it", BrainfuckOutputTypes.Error);
+                WriteOutput(errors, BrainfuckOutputTypes.Error);
                 return;
             }
             //TODO implement
@@ -222,7 +232,7 @@ namespace Brainf1ck_IDE.ViewModels
             if (brainfuckErrorParser
                     .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
             {
-                WriteOutput("TODO Find error and display it", BrainfuckOutputTypes.Error);
+                WriteOutput(errors, BrainfuckOutputTypes.Error);
                 return;
             }
 
@@ -246,12 +256,30 @@ namespace Brainf1ck_IDE.ViewModels
             if (brainfuckErrorParser
                 .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
             {
-                WriteOutput("TODO Find error and display it", BrainfuckOutputTypes.Error);
+                WriteOutput(errors, BrainfuckOutputTypes.Error);
                 return;
             }
             //TODO implement
 
 
+        }
+
+        [RelayCommand]
+        async Task ShowHelp()
+        {
+            if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
+            {
+                return;
+            }
+
+            await projectPage.DisplayAlert("Help",
+                "Use +- to increment/decrement value of current memory cell.\n" +
+                "Use <> to move through memory cells.\n" +
+                "Use [] to execute code inside while current cell (last cell before ]) value not equals 0.\n" +
+                "Use , to put a character before that symbol (before ,) into current cell.\n" +
+                "Use . to output current cell value.\n" +
+                "Have fun :)",
+                "Ok");
         }
 
         public void SaveAllFiles()
