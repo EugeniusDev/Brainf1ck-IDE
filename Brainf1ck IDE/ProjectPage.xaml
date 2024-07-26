@@ -8,8 +8,12 @@
              x:DataType="viewmodel:ProjectPageViewModel"
              BackgroundColor="{StaticResource PrimaryDark}">    
     <Grid HorizontalOptions="Fill" VerticalOptions="Fill" ColumnDefinitions="2*,8*">
+        <Label Grid.Column="1" x:Name="NoActiveViewLabel"
+            FontSize="Large" FontAttributes="Bold" LineBreakMode="WordWrap"
+            VerticalOptions="Center" HorizontalOptions="Center"
+            Text="Add or select a file or open project settings to get started" />
         <!-- Left panel with list of files etc. -->
-        <Grid RowDefinitions="2*,4*,10*,4*" ColumnDefinitions="*" VerticalOptions="Fill" Margin="4">
+        <Grid RowDefinitions="2*,4*,10*,4*" Margin="4">
             <!-- Project name -->
             <Label Text="{Binding ProjectProps.Name}" FontSize="Medium"
                 VerticalOptions="Center" HorizontalOptions="Center" />
@@ -52,91 +56,85 @@
                     ImageSrc="settings_button.png"
                     PrimaryText="Settings" />
         </Grid>
-        <Label Grid.Column="1" x:Name="NoActiveViewLabel"
-            FontSize="Large" FontAttributes="Bold" LineBreakMode="WordWrap"
-            VerticalOptions="Center" HorizontalOptions="Center"
-            Text="Add or select a file or open project settings to get started" />
-        <!-- Code view -->
-        <Grid Grid.Column="1" x:Name="CodeGrid"
-              VerticalOptions="Fill" RowDefinitions="4*,10*,5*" Margin="4"
-              Scale=".6" IsEnabled="False" IsVisible="Collapse">
-            <!-- Buttons -->
-            <FlexLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"
-                Margin="0,4" JustifyContent="SpaceEvenly" Padding="2">
-                <local:TextImageFrame 
+            <!-- Code view -->
+            <Grid Grid.Column="1" x:Name="CodeGrid"
+                  RowDefinitions="4*,10*,5*" ColumnDefinitions="*,*,*,*,*"
+                  Margin="4" Scale=".6" IsEnabled="False" IsVisible="Collapse">
+                <!-- Buttons -->
+                <local:TextImageFrame Grid.Column="0"
                     CommandToCall="{Binding PasteCodeSnippetCommand}"
                     ImageSrc="paste_snippet_button.png"
-                    PrimaryText="Paste snippet"/>
-                <local:TextImageFrame 
+                    PrimaryText="Snippets"/>
+                <local:TextImageFrame Grid.Column="1"
                     CommandToCall="{Binding NotImplementedCommand}"
                     ImageSrc="visualize_button.png"
                     PrimaryText="Visualize"/>
-                <local:TextImageFrame 
+                <local:TextImageFrame Grid.Column="2"
                     CommandToCall="{Binding ExecuteCodeCommand}"
                     ImageSrc="run_button.png"
                     PrimaryText="Run"/>
-                <local:TextImageFrame 
+            <local:TextImageFrame Grid.Column="3"
                     CommandToCall="{Binding NotImplementedCommand}"
                     ImageSrc="optimize_button.png"
                     PrimaryText="Optimize"/>
-                <local:TextImageFrame
+            <local:TextImageFrame Grid.Column="4"
                     CommandToCall="{Binding ShowHelpCommand}"
                     ImageSrc="help_button.png"
                     PrimaryText="Help"/>
-            </FlexLayout>
-            <!-- Code editor -->
-            <Frame Grid.Row="1" Margin="4" VerticalOptions="Fill">
-                <ScrollView Padding="0" HorizontalOptions="Fill" VerticalScrollBarVisibility="Always">
-                    <Editor x:Name="TextEditor" AutoSize="Disabled"
-                           Margin="0" BackgroundColor="{StaticResource CodeEditor}"
-                           VerticalOptions="Fill" VerticalTextAlignment="Start"
-                           IsSpellCheckEnabled="False" IsTextPredictionEnabled="False"
-                           Text="{Binding SelectedFile.Contents}"
-                           FontSize="Micro" FontFamily="monospace"/>
-                </ScrollView>
-            </Frame>
-            <!-- Code output-->
-            <Frame Grid.Row="2" Margin="4">
-                <Grid RowDefinitions="2*,6*" BackgroundColor="#222233">
-                    <Label Text="Output" FontSize="Caption" FontFamily="monospace"
-                           VerticalOptions="Center" Margin="20,0,0,0"/>
-                    <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundElements}">
-                        <Label Text="{Binding Output}" Margin="6" FontFamily="monospace"
-                               TextColor="{Binding OutputColor}"
-                               FontSize="Caption" LineBreakMode="WordWrap"/>                        
+                <!-- Code editor -->
+                <Frame Grid.Row="1" Grid.ColumnSpan="5" Margin="4" VerticalOptions="Fill">
+                    <ScrollView Padding="0" HorizontalOptions="Fill" 
+                        VerticalScrollBarVisibility="Always" HorizontalScrollBarVisibility="Always">
+                        <Editor x:Name="TextEditor" AutoSize="Disabled"
+                               Margin="0" BackgroundColor="{StaticResource CodeEditor}"
+                               VerticalOptions="Fill" VerticalTextAlignment="Start"
+                               IsSpellCheckEnabled="False" IsTextPredictionEnabled="False"
+                               Text="{Binding SelectedFile.Contents}"
+                               FontSize="Micro" FontFamily="monospace"/>
                     </ScrollView>
-                </Grid>
-            </Frame>
-        </Grid>
-        <!-- Settings view -->
-        <VerticalStackLayout Grid.Column="1" x:Name="SettingsView" Margin="4" Spacing="30"
-            Padding="30" Scale=".6" IsEnabled="False" IsVisible="Collapse" HorizontalOptions="Fill" VerticalOptions='Fill'>
-            <Label Text="{Binding ProjectProps.Name}" FontSize="Large" 
-                    VerticalOptions="Center" HorizontalOptions="Center" />
-            <VerticalStackLayout Grid.Row="1" Spacing="30" HorizontalOptions="Center"
-                                 VerticalOptions="Center">
-                <HorizontalStackLayout Spacing="70">
-                    <!-- Change memory length -->
-                    <HorizontalStackLayout Spacing="20">
-                        <Label Text="Memory length:" VerticalOptions="Center" FontSize="Small" />
-                        <Entry Text="{Binding MemoryLengthInput}" FontSize="Small"
-                            MaximumWidthRequest="100" Keyboard="Numeric"
-                            Placeholder="30000" PlaceholderColor="#444" />
+                </Frame>
+                <!-- Code output-->
+                <Frame Grid.Row="2" Grid.ColumnSpan="5" Margin="4">
+                    <Grid RowDefinitions="2*,6*" BackgroundColor="#222233">
+                        <Label Text="Output" FontSize="Caption" FontFamily="monospace"
+                               VerticalOptions="Center" Margin="20,0,0,0"/>
+                        <ScrollView Grid.Row="1" BackgroundColor="{StaticResource BackgroundElements}">
+                            <Label Text="{Binding Output}" Margin="6" FontFamily="monospace"
+                                   TextColor="{Binding OutputColor}"
+                                   FontSize="Caption" LineBreakMode="WordWrap"/>                        
+                        </ScrollView>
+                    </Grid>
+                </Frame>
+            </Grid>
+            <!-- Settings view -->
+            <VerticalStackLayout Grid.Column="1" x:Name="SettingsView" Margin="4" Spacing="30"
+                Padding="30" Scale=".6" IsEnabled="False" IsVisible="Collapse" HorizontalOptions="Fill" VerticalOptions='Fill'>
+                <Label Text="{Binding ProjectProps.Name}" FontSize="Large" 
+                        VerticalOptions="Center" HorizontalOptions="Center" />
+                <VerticalStackLayout Grid.Row="1" Spacing="30" HorizontalOptions="Center"
+                                     VerticalOptions="Center">
+                    <HorizontalStackLayout Spacing="70">
+                        <!-- Change memory length -->
+                        <HorizontalStackLayout Spacing="20">
+                            <Label Text="Memory length:" VerticalOptions="Center" FontSize="Small" />
+                            <Entry Text="{Binding MemoryLengthInput}" FontSize="Small"
+                                MaximumWidthRequest="100" Keyboard="Numeric"
+                                Placeholder="30000" PlaceholderColor="#444" />
+                        </HorizontalStackLayout>
+                        <!-- Change initial cell index -->
+                        <HorizontalStackLayout Spacing="20">
+                            <Label Text="Initial cell index:" VerticalOptions="Center" FontSize="Small" />
+                            <Entry Text="{Binding InitialIndexInput}" FontSize="Small"
+                                MaximumWidthRequest="100" Keyboard="Numeric"
+                                Placeholder="0" PlaceholderColor="#444" />
+                        </HorizontalStackLayout>
                     </HorizontalStackLayout>
-                    <!-- Change initial cell index -->
-                    <HorizontalStackLayout Spacing="20">
-                        <Label Text="Initial cell index:" VerticalOptions="Center" FontSize="Small" />
-                        <Entry Text="{Binding InitialIndexInput}" FontSize="Small"
-                            MaximumWidthRequest="100" Keyboard="Numeric"
-                            Placeholder="0" PlaceholderColor="#444" />
-                    </HorizontalStackLayout>
-                </HorizontalStackLayout>
-                <Label Text="{Binding ErrorMessage}" x:Name="ErrorLabel"
-                    TextColor="#aa2222" HorizontalOptions="Center" />
+                    <Label Text="{Binding ErrorMessage}" x:Name="ErrorLabel"
+                        TextColor="#aa2222" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+                <!-- Save changes -->
+                <Button Grid.Row="2" Text="Save new settings" FontSize="Small"
+                    Command="{Binding TrySaveNewSettingsCommand}" />
             </VerticalStackLayout>
-            <!-- Save changes -->
-            <Button Grid.Row="2" Text="Save new settings" FontSize="Small"
-                Command="{Binding TrySaveNewSettingsCommand}" />
-        </VerticalStackLayout>
     </Grid>
 </ContentPage>

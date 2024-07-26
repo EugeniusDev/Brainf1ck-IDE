@@ -37,7 +37,8 @@ namespace Brainf1ck_IDE.ViewModels
         private BrainfuckExecutor brainfuckExecutor = new(new());
         private BrainfuckErrorParser brainfuckErrorParser = new(new());
 
-        public void ConfigureViewModel()
+        private ProjectPage projectPage;
+        public void ConfigureViewModel(ProjectPage projectPage)
         {
             MemoryLengthInput = ProjectProps.MemoryLength.ToString();
             InitialIndexInput = ProjectProps.InitialCellIndex.ToString();
@@ -48,6 +49,7 @@ namespace Brainf1ck_IDE.ViewModels
             BrainfuckFiles = RetrieveBrainfuckFilesData();
             brainfuckExecutor = new(ProjectProps);
             brainfuckErrorParser = new(ProjectProps);
+            this.projectPage = projectPage;
         }
 
         private ObservableCollection<BrainfuckFile> RetrieveBrainfuckFilesData()
@@ -72,10 +74,7 @@ namespace Brainf1ck_IDE.ViewModels
         {
             SaveSelectedFile();
             SelectedFile = new();
-            if (AppShell.Current.CurrentPage is ProjectPage projectPage)
-            {
-                await projectPage.OpenSettingsView();
-            }
+            await projectPage.OpenSettingsView();
         }
 
         [RelayCommand]
@@ -86,11 +85,6 @@ namespace Brainf1ck_IDE.ViewModels
             if (string.IsNullOrEmpty(ErrorMessage))
             {
                 ProjectProps.SaveToFile(projectSettingsPath);
-                if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
-                {
-                    return;
-                }
-
                 await projectPage.DisplayAlert("Success", "Project settings updated", "Ok");
             }
         }
@@ -127,11 +121,6 @@ namespace Brainf1ck_IDE.ViewModels
         [RelayCommand]
         async Task AddNewFile()
         {
-            if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
-            {
-                return;
-            }
-
             string newFileName = await projectPage.PromptNewBrainfuckFilename();
             if (string.IsNullOrEmpty(newFileName))
             {
@@ -169,10 +158,7 @@ namespace Brainf1ck_IDE.ViewModels
             {
                 return;
             }
-            if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
-            {
-                return;
-            }
+
             bool deletionConfirmed = await projectPage.DisplayAlert("Delete selected file",
                 $"\"{SelectedFile.Name}\" will be permanently deleted", "Ok", "Cancel");
             if (deletionConfirmed)
@@ -187,11 +173,6 @@ namespace Brainf1ck_IDE.ViewModels
         [RelayCommand]
         async Task PasteCodeSnippet()
         {
-            if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
-            {
-                return;
-            }
-
             string? userAnswer = await projectPage.PromptForSnippet();
             CodeSnippets snippetType = BrainfuckSnippets.GetKeyByString(userAnswer);
             if (snippetType != CodeSnippets.Cancel)
@@ -271,11 +252,6 @@ namespace Brainf1ck_IDE.ViewModels
         [RelayCommand]
         async Task ShowHelp()
         {
-            if (AppShell.Current.CurrentPage is not ProjectPage projectPage)
-            {
-                return;
-            }
-
             await projectPage.DisplayAlert("Help",
                 "Use +- to increment/decrement value of current memory cell.\n" +
                 "Use <> to move through memory cells.\n" +
@@ -295,14 +271,11 @@ namespace Brainf1ck_IDE.ViewModels
         }
 
         [RelayCommand]
-        void NotImplemented()
+        async Task NotImplemented()
         {
-            if (AppShell.Current.CurrentPage is ProjectPage projectPage)
-            {
-                projectPage.DisplayAlert("Coming soon...",
-                    "This functionality is not yet implemented",
-                    "Ok, good luck");
-            }
+            await projectPage.DisplayAlert("Coming soon...",
+                "This functionality is not yet implemented",
+                "Ok, good luck");
         }
     }
 }

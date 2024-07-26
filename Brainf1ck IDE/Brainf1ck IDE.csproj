@@ -69,7 +69,7 @@
 	  <None Remove="Resources\Splash\brain_splash.png" />
 	</ItemGroup>
 
-	<!-- Images taken from:
+	<!-- Used images from:
 		https://www.freepik.com/icon/add_11233005
 		https://www.freepik.com/icon/folder_3857008
 		https://www.freepik.com/icon/square-x_10457015
@@ -78,7 +78,8 @@
 		https://www.freepik.com/icon/pause_12967009
 		https://www.freepik.com/icon/play_14358492
 		https://www.freepik.com/icon/spark_10239565
-		https://www.freepik.com/icon/question_6068072 -->
+		https://www.freepik.com/icon/question_6068072 
+		https://www.freepik.com/icon/brain_1830920 -->
 	
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />

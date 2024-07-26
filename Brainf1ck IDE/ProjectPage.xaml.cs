@@ -17,7 +17,7 @@ public partial class ProjectPage : ContentPage
     {
         if (BindingContext is ProjectPageViewModel vm)
         {
-		    vm.ConfigureViewModel();
+		    vm.ConfigureViewModel(this);
         }
 
         base.OnAppearing();
@@ -130,5 +130,10 @@ public partial class ProjectPage : ContentPage
         }
 
         base.OnDisappearing();
+    }
+
+    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    {
+        await DisplayAlert("TEst", "YEEEE", "nooo");
     }
 }
