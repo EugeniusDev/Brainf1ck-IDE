@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Brainf1ck_IDE.VisualizerPage"
+             xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.Presentation.ViewModels"
+             xmlns:local="clr-namespace:Brainf1ck_IDE"
+             x:DataType="viewmodel:VisualizerPageViewModel"
+             BackgroundColor="{StaticResource PrimaryDark}"
+             Title="{Binding SelectedFile.Name}">
+    <Grid ColumnDefinitions="4*,2*" RowDefinitions="8*,3*"
+            Margin="4">
+        <VerticalStackLayout Margin="4" Spacing="40">
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                <HorizontalStackLayout Spacing="0" VerticalOptions="Center">
+                    <Label Text="Cell [" FontSize="Large" />
+                    <Label Text="{Binding CurrentCellIndex}" FontSize="Large" 
+                            FontAttributes="Bold" TextColor="AliceBlue" />
+                    <Label Text="] = " FontSize="Large" />                        
+                </HorizontalStackLayout>
+                <Frame CornerRadius="90" WidthRequest="200" HeightRequest="200">
+                    <Label Text="{Binding CurrentCellValue}" 
+                            FontSize="60" TextColor="AliceBlue"
+                            VerticalOptions="Center" HorizontalOptions="Center" />
+                </Frame>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="0" HorizontalOptions="Center">
+                <Label Text="Current input character: " FontSize="Medium"/>
+                <Label Text="{Binding CurrentInputCharacter}" FontSize="Medium"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+        <!-- Code -->
+        <VerticalStackLayout Grid.Row="1" Spacing="6">
+            <Label Text="Source code:" FontSize="Small" HorizontalOptions="Center"/>
+            <Frame Grid.Column="1" VerticalOptions="Fill" >
+                <ScrollView Padding="0" HorizontalOptions="Fill" HeightRequest="100"                          
+                    VerticalScrollBarVisibility="Always">
+                    <Label Text="{Binding SelectedFile.Contents}"
+                        Margin="0" Padding="6"
+                        BackgroundColor="{StaticResource CodeEditor}"
+                        FontSize="Micro" FontFamily="monospace"/>
+                </ScrollView>
+            </Frame>
+        </VerticalStackLayout>
+        <FlexLayout Grid.Column="1" Direction="Column"
+                    AlignContent="Center" JustifyContent="SpaceEvenly">
+            <!-- Buttons --> 
+            <local:TextImageFrame MaximumHeightRequest="80"
+                CommandToCall="{Binding NextStepManuallyCommand}"
+                ImageSrc="visualize_button.png"
+                PrimaryText="One step forward" />
+            <local:TextImageFrame MaximumHeightRequest="80"
+                CommandToCall="{Binding AutorunButtonCommand}"
+                ImageSrc="autorun_toggle_button.png"
+                PrimaryText="{Binding AutorunButtonText}" />
+            <local:TextImageFrame MaximumHeightRequest="80"
+                CommandToCall="{Binding SlowDownStepsCommand}"
+                ImageSrc="slower_button.png"
+                PrimaryText="Slower autorun speed" />
+            <local:TextImageFrame MaximumHeightRequest="80"
+                CommandToCall="{Binding MakeFasterStepsCommand}"
+                ImageSrc="faster_button.png"
+                PrimaryText="Faster autorun speed" />
+        </FlexLayout>
+        <!--Code output-->
+        <Frame Grid.Column="1" Grid.Row="1" Margin="4">
+            <Grid RowDefinitions="2*,6*" BackgroundColor="#222233">
+                <Label Text="Output" FontSize="Caption" FontFamily="monospace"
+                VerticalOptions="Center" Margin="20,0,0,0"/>
+                <ScrollView Grid.Row="1" HeightRequest="100"
+                            BackgroundColor="{StaticResource BackgroundElements}">
+                    <Label Text="{Binding Output}" Margin="6" FontFamily="monospace"
+                    FontSize="Caption" LineBreakMode="WordWrap"/>
+                </ScrollView>
+            </Grid>
+        </Frame>
+    </Grid>
+</ContentPage>

@@ -1,7 +1,7 @@
 using Brainf1ck_IDE.Common;
 using Brainf1ck_IDE.Common.FileProcessing;
 using Brainf1ck_IDE.Domain;
-using Brainf1ck_IDE.ViewModels;
+using Brainf1ck_IDE.Presentation.ViewModels;
 
 namespace Brainf1ck_IDE;
 
@@ -130,10 +130,5 @@ public partial class ProjectPage : ContentPage
         }
 
         base.OnDisappearing();
-    }
-
-    private async void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
-    {
-        await DisplayAlert("TEst", "YEEEE", "nooo");
     }
 }

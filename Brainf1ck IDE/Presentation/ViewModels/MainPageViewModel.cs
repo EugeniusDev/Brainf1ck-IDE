@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
-namespace Brainf1ck_IDE.ViewModels
+namespace Brainf1ck_IDE.Presentation.ViewModels
 {
     public partial class MainPageViewModel : ObservableObject
     {

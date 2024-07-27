@@ -6,7 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
-namespace Brainf1ck_IDE.ViewModels
+namespace Brainf1ck_IDE.Presentation.ViewModels
 {
     [QueryProperty("ProjectProps", nameof(ProjectProperties))]
     public partial class ProjectPageViewModel : ObservableObject
@@ -182,7 +182,7 @@ namespace Brainf1ck_IDE.ViewModels
         }
 
         [RelayCommand]
-        void VisualizeCodeExecution()
+        async Task VisualizeCodeExecution()
         {
             if (brainfuckErrorParser
                     .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
@@ -190,7 +190,17 @@ namespace Brainf1ck_IDE.ViewModels
                 WriteOutput(errors, BrainfuckOutputTypes.Error);
                 return;
             }
-            //TODO implement
+
+            await Shell.Current.GoToAsync(
+                $"{nameof(VisualizerPage)}?" +
+                $"{nameof(ProjectProperties)}={ProjectProps}" +
+                $"&{nameof(BrainfuckFile)}={SelectedFile}",
+                true,
+                new Dictionary<string, object>
+                {
+                    { nameof(ProjectProperties), ProjectProps },
+                    { nameof(BrainfuckFile), SelectedFile }
+                });
         }
 
         void WriteOutput(string output, BrainfuckOutputTypes type)
@@ -233,20 +243,6 @@ namespace Brainf1ck_IDE.ViewModels
             {
                 WriteOutput(executionOutput, BrainfuckOutputTypes.Output);
             }
-        }
-
-        [RelayCommand]
-        void OptimizeCode()
-        {
-            if (brainfuckErrorParser
-                .TryRetrieveErrorsFrom(SelectedFile.Contents, out string errors))
-            {
-                WriteOutput(errors, BrainfuckOutputTypes.Error);
-                return;
-            }
-            //TODO implement
-
-
         }
 
         [RelayCommand]

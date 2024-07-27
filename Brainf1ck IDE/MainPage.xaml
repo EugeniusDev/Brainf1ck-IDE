@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Brainf1ck_IDE.MainPage"
              xmlns:local="clr-namespace:Brainf1ck_IDE"
-             xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
+             xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.Presentation.ViewModels"
              xmlns:projectRelated="clr-namespace:Brainf1ck_IDE.Common.ProjectRelated"
              x:DataType="viewmodel:MainPageViewModel"
              BackgroundColor="{StaticResource PrimaryDark}">

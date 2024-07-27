@@ -1,7 +1,7 @@
 ﻿using Brainf1ck_IDE.Common.FileProcessing;
 using Brainf1ck_IDE.Common.ProjectRelated;
 using Brainf1ck_IDE.Common.Settings;
-using Brainf1ck_IDE.ViewModels;
+using Brainf1ck_IDE.Presentation.ViewModels;
 using CommunityToolkit.Maui.Storage;
 
 namespace Brainf1ck_IDE

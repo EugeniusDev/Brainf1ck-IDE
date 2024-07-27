@@ -1,4 +1,4 @@
-﻿using Brainf1ck_IDE.ViewModels;
+﻿using Brainf1ck_IDE.Presentation.ViewModels;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 
@@ -23,6 +23,9 @@ namespace Brainf1ck_IDE
 
             builder.Services.AddTransient<ProjectPage>();
             builder.Services.AddTransient<ProjectPageViewModel>();
+
+            builder.Services.AddTransient<VisualizerPage>();
+            builder.Services.AddTransient<VisualizerPageViewModel>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

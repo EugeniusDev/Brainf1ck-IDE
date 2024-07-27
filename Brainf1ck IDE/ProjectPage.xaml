@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Brainf1ck_IDE.ProjectPage"
-             xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.ViewModels"
+             xmlns:viewmodel="clr-namespace:Brainf1ck_IDE.Presentation.ViewModels"
              xmlns:local="clr-namespace:Brainf1ck_IDE"
              xmlns:fileProcessing="clr-namespace:Brainf1ck_IDE.Common.FileProcessing"
              x:DataType="viewmodel:ProjectPageViewModel"
@@ -58,7 +58,7 @@
         </Grid>
             <!-- Code view -->
             <Grid Grid.Column="1" x:Name="CodeGrid"
-                  RowDefinitions="4*,10*,5*" ColumnDefinitions="*,*,*,*,*"
+                  RowDefinitions="4*,10*,5*" ColumnDefinitions="*,*,*,*"
                   Margin="4" Scale=".6" IsEnabled="False" IsVisible="Collapse">
                 <!-- Buttons -->
                 <local:TextImageFrame Grid.Column="0"
@@ -66,21 +66,17 @@
                     ImageSrc="paste_snippet_button.png"
                     PrimaryText="Snippets"/>
                 <local:TextImageFrame Grid.Column="1"
-                    CommandToCall="{Binding NotImplementedCommand}"
+                    CommandToCall="{Binding VisualizeCodeExecutionCommand}"
                     ImageSrc="visualize_button.png"
                     PrimaryText="Visualize"/>
                 <local:TextImageFrame Grid.Column="2"
                     CommandToCall="{Binding ExecuteCodeCommand}"
                     ImageSrc="run_button.png"
                     PrimaryText="Run"/>
-            <local:TextImageFrame Grid.Column="3"
-                    CommandToCall="{Binding NotImplementedCommand}"
-                    ImageSrc="optimize_button.png"
-                    PrimaryText="Optimize"/>
-            <local:TextImageFrame Grid.Column="4"
-                    CommandToCall="{Binding ShowHelpCommand}"
-                    ImageSrc="help_button.png"
-                    PrimaryText="Help"/>
+                <local:TextImageFrame Grid.Column="3"
+                        CommandToCall="{Binding ShowHelpCommand}"
+                        ImageSrc="help_button.png"
+                        PrimaryText="Help"/>
                 <!-- Code editor -->
                 <Frame Grid.Row="1" Grid.ColumnSpan="5" Margin="4" VerticalOptions="Fill">
                     <ScrollView Padding="0" HorizontalOptions="Fill" 

@@ -58,9 +58,9 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\AppIcon\appicon.png" />
+	  <None Remove="Resources\Images\autorun_toggle_button.png" />
 	  <None Remove="Resources\Images\create_project_button.png" />
 	  <None Remove="Resources\Images\help_button.png" />
-	  <None Remove="Resources\Images\optimize_button.png" />
 	  <None Remove="Resources\Images\paste_snippet_button.png" />
 	  <None Remove="Resources\Images\remove_button.png" />
 	  <None Remove="Resources\Images\run_button.png" />
@@ -107,6 +107,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Presentation\CustomViews\TextImageFrame.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="VisualizerPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

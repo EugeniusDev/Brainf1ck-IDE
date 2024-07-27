@@ -7,6 +7,7 @@
             InitializeComponent();
 
             Routing.RegisterRoute(nameof(ProjectPage), typeof(ProjectPage));
+            Routing.RegisterRoute(nameof(VisualizerPage), typeof(VisualizerPage));
         }
     }
 }
