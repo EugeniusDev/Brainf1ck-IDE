@@ -2,6 +2,7 @@
 using Brainf1ck_IDE.Common.FileProcessing;
 using Brainf1ck_IDE.Common.ProjectRelated;
 using CommunityToolkit.Mvvm.Input;
+using Brainf1ck_IDE.Domain;
 
 namespace Brainf1ck_IDE.Presentation.ViewModels
 {
@@ -13,13 +14,10 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
         private ProjectProperties projectProps = new();
         [ObservableProperty]
         private BrainfuckFile selectedFile = new();
+        
+        [ObservableProperty]
+        ExecutionStepInfo currentStepInfo = new();
 
-        [ObservableProperty]
-        private string currentCellIndex;
-        [ObservableProperty]
-        private string currentCellValue = "0";
-        [ObservableProperty]
-        private char currentInputCharacter = ' ';
         [ObservableProperty]
         string output = string.Empty;
         [ObservableProperty]
@@ -27,9 +25,13 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
 
         uint stepIntervalInMilliseconds = 700;
         Timer? timer;
-        public VisualizerPageViewModel()
+
+        private Queue<ExecutionStepInfo> executionSteps = [];
+
+        public void ConfigureViewModel()
         {
-            CurrentCellIndex = ProjectProps.InitialCellIndex.ToString();
+            BrainfuckExecutor executor = new(ProjectProps);
+            executionSteps = executor.Execute(SelectedFile.Contents, out _);
         }
 
         [RelayCommand]
@@ -38,12 +40,10 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
             if (timer is null)
             {
                 ToggleAutorun(true);
-                AutorunButtonText = "Turn Off Autorun";
             }
             else
             {
                 ToggleAutorun(false);
-                AutorunButtonText = "Turn On Autorun";
             }
         }
 
@@ -51,14 +51,22 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
         {
             if (shouldEnableAutorun)
             {
-                timer = new Timer(TimerCallback, null, 
-                    TimeSpan.Zero,
-                    TimeSpan.FromMilliseconds(stepIntervalInMilliseconds));
+                ResetTimer();
+                AutorunButtonText = "Turn Off Autorun";
             }
             else
             {
                 timer?.Dispose();
+                AutorunButtonText = "Turn On Autorun";
             }
+        }
+
+        private void ResetTimer()
+        {
+            timer?.Dispose();
+            timer = new Timer(TimerCallback, null,
+                TimeSpan.FromMilliseconds(stepIntervalInMilliseconds),
+                TimeSpan.FromMilliseconds(stepIntervalInMilliseconds));
         }
 
         private void TimerCallback(object? state)
@@ -68,7 +76,14 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
 
         private void NextStep()
         {
-            // TODO implement
+            if (executionSteps.Count == 0)
+            {
+                ToggleAutorun(false);
+                return;
+            }
+
+            CurrentStepInfo = executionSteps.Dequeue();
+            Output = string.Concat(Output, CurrentStepInfo.Output);
         }
 
         [RelayCommand]
@@ -81,18 +96,17 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
         [RelayCommand]
         void SlowDownSteps()
         {
-            stepIntervalInMilliseconds += 300;
+            stepIntervalInMilliseconds += 100;
+            ResetTimer();
         }
         [RelayCommand]
         void MakeFasterSteps()
         {
-            stepIntervalInMilliseconds -= 300;
-        }
-
-        [RelayCommand]
-        void NotImplemented()
-        {
-            Output = "This functionality is not yet implemented. Coming soon...";
+            if (stepIntervalInMilliseconds > 100)
+            {
+                stepIntervalInMilliseconds -= 100;
+                ResetTimer();
+            }
         }
     }
 }

@@ -231,8 +231,8 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
                 return;
             }
 
-            string executionOutput = brainfuckExecutor
-                .Execute(SelectedFile.Contents);
+            brainfuckExecutor.Execute(SelectedFile.Contents,
+                out string executionOutput);
             if (string.IsNullOrWhiteSpace(executionOutput))
             {
                 WriteOutput("Your code outputs nothing. " +

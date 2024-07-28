@@ -27,7 +27,12 @@
     public enum CodeSnippets : ushort
     {
         HelloWorld,
-        // TODO add more snippets
+        PrintA,
+        ClearMemory,
+        AddNumbers,
+        SubtractNumbers,
+        MultiplyNumbers,
+        DivideNumbers,
         Cancel
     }
 }

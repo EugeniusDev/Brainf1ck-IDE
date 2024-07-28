@@ -13,19 +13,19 @@
             <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
                 <HorizontalStackLayout Spacing="0" VerticalOptions="Center">
                     <Label Text="Cell [" FontSize="Large" />
-                    <Label Text="{Binding CurrentCellIndex}" FontSize="Large" 
+                    <Label Text="{Binding CurrentStepInfo.CellIndex}" FontSize="Large" 
                             FontAttributes="Bold" TextColor="AliceBlue" />
                     <Label Text="] = " FontSize="Large" />                        
                 </HorizontalStackLayout>
                 <Frame CornerRadius="90" WidthRequest="200" HeightRequest="200">
-                    <Label Text="{Binding CurrentCellValue}" 
+                    <Label Text="{Binding CurrentStepInfo.CellValue}" 
                             FontSize="60" TextColor="AliceBlue"
                             VerticalOptions="Center" HorizontalOptions="Center" />
                 </Frame>
             </HorizontalStackLayout>
-            <HorizontalStackLayout Spacing="0" HorizontalOptions="Center">
+            <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                 <Label Text="Current input character: " FontSize="Medium"/>
-                <Label Text="{Binding CurrentInputCharacter}" FontSize="Medium"/>
+                <Label Text="{Binding CurrentStepInfo.Input}" FontSize="Medium"/>
             </HorizontalStackLayout>
         </VerticalStackLayout>
         <!-- Code -->
@@ -68,8 +68,9 @@
                 VerticalOptions="Center" Margin="20,0,0,0"/>
                 <ScrollView Grid.Row="1" HeightRequest="100"
                             BackgroundColor="{StaticResource BackgroundElements}">
-                    <Label Text="{Binding Output}" Margin="6" FontFamily="monospace"
-                    FontSize="Caption" LineBreakMode="WordWrap"/>
+                    <Label Text="{Binding Output}" Margin="6" LineBreakMode="WordWrap"
+                           TextColor="LawnGreen"
+                           FontFamily="monospace" FontSize="Caption" />
                 </ScrollView>
             </Grid>
         </Frame>

@@ -7,8 +7,9 @@ namespace Brainf1ck_IDE.Domain
     {
         private readonly ProjectProperties projectProperties = projectProperties;
 
-        public string Execute(string bfInput)
+        public Queue<ExecutionStepInfo> Execute(string bfInput, out string output)
         {
+            Queue<ExecutionStepInfo> executionSteps = [];
             byte[] memory = new byte[projectProperties.MemoryLength];
             uint cellIndex = projectProperties.InitialCellIndex;
             StringBuilder stringBuilder = new();
@@ -18,21 +19,64 @@ namespace Brainf1ck_IDE.Domain
                 {
                     case '+':
                         memory[cellIndex]++;
+                        executionSteps.Enqueue(new ExecutionStepInfo
+                        {
+                            Input = "+",
+                            Output = string.Empty,
+                            CellIndex = cellIndex.ToString(),
+                            CellValue = memory[cellIndex].ToString()
+                        });
                         break;
                     case '-':
                         memory[cellIndex]--;
+                        executionSteps.Enqueue(new ExecutionStepInfo
+                        {
+                            Input = "-",
+                            Output = string.Empty,
+                            CellIndex = cellIndex.ToString(),
+                            CellValue = memory[cellIndex].ToString()
+                        });
                         break;
                     case '>':
                         cellIndex++;
+                        executionSteps.Enqueue(new ExecutionStepInfo
+                        {
+                            Input = ">",
+                            Output = string.Empty,
+                            CellIndex = cellIndex.ToString(),
+                            CellValue = memory[cellIndex].ToString()
+                        });
                         break;
                     case '<':
                         cellIndex--;
+                        executionSteps.Enqueue(new ExecutionStepInfo
+                        {
+                            Input = "<",
+                            Output = string.Empty,
+                            CellIndex = cellIndex.ToString(),
+                            CellValue = memory[cellIndex].ToString()
+                        });
                         break;
                     case ',':
-                        memory[cellIndex] = (byte)bfInput[i-1];
+                        memory[cellIndex] = (byte)bfInput[i - 1];
+                        executionSteps.Enqueue(new ExecutionStepInfo
+                        {
+                            Input = bfInput[i - 1] + ",",
+                            Output = string.Empty,
+                            CellIndex = cellIndex.ToString(),
+                            CellValue = memory[cellIndex].ToString()
+                        });
                         break;
                     case '.':
-                        stringBuilder.Append((char)memory[cellIndex]);
+                        char tempOutput = (char)memory[cellIndex];
+                        stringBuilder.Append(tempOutput);
+                        executionSteps.Enqueue(new ExecutionStepInfo
+                        {
+                            Input = ".",
+                            Output = tempOutput.ToString(),
+                            CellIndex = cellIndex.ToString(),
+                            CellValue = memory[cellIndex].ToString()
+                        });
                         break;
                     case '[':
                         // If the current cell is zero, we need to skip the loop.
@@ -77,7 +121,8 @@ namespace Brainf1ck_IDE.Domain
                 }
             }
 
-            return stringBuilder.ToString();
+            output = stringBuilder.ToString();
+            return executionSteps;
         }
 
     }

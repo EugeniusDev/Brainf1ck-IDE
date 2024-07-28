@@ -106,9 +106,15 @@ public partial class ProjectPage : ContentPage
 
     public async Task<string?> PromptForSnippet()
     {
-        return await DisplayActionSheet("Choose snippet to paste",
-            "Cancel",
-            "Hello World");
+        return await DisplayActionSheet("Choose snippet to paste", "Cancel",
+            "Print \"Hello World\"",
+            "Print \'A\'",
+            "Clear memory",
+            "Add 3+5",
+            "Subtract 5-3",
+            "Multiply 3*2",
+            "Divide 6/3"
+            );
     }
 
     public void PasteSnippet(CodeSnippets type)

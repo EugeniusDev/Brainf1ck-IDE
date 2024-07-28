@@ -10,4 +10,10 @@ public partial class VisualizerPage : ContentPage
 		BindingContext = vm;
 	}
 
+    protected override void OnAppearing()
+    {
+		var vm = (VisualizerPageViewModel)BindingContext;
+		vm.ConfigureViewModel();
+        base.OnAppearing();
+    }
 }
