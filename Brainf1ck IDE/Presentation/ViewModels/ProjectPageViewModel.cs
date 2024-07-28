@@ -265,13 +265,5 @@ namespace Brainf1ck_IDE.Presentation.ViewModels
                 SaveBrainfuckFile(file);
             }
         }
-
-        [RelayCommand]
-        async Task NotImplemented()
-        {
-            await projectPage.DisplayAlert("Coming soon...",
-                "This functionality is not yet implemented",
-                "Ok, good luck");
-        }
     }
 }
